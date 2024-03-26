@@ -10,7 +10,7 @@ export default function BoardDetailUI(props) {
           <S.ProfileWrapper>
             <S.ProfileImage src='../../images/avatar.png'/>
             <S.Info>
-              <S.Writer>{props.data?.fetchBoard?.writer}aaa</S.Writer>
+              <S.Writer>{props.data?.fetchBoard?.writer}</S.Writer>
               <S.CreatedAt>{getDate(props.data?.fetchBoard?.createdAt)}</S.CreatedAt>
             </S.Info>
           </S.ProfileWrapper>

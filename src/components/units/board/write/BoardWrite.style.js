@@ -135,12 +135,13 @@ export const RegistButton = styled.button`
   width: 180px;
   height: 52px;
   border: none;
-  background: #FFD600;
   margin: 0 auto;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 100px;
-  cursor: pointer;
+  cursor: ${(props) => props.isActive? "pointer":""};
+  background-color : ${(props) => props.isActive? "#FFD600":"#ccc"};
+
 `
 
 export const Error = styled.div`
