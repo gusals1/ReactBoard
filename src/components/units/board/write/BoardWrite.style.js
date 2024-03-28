@@ -52,10 +52,10 @@ export const BoardInput = styled.input`
     font-weight: 400;
     font-size: 16px;
     color: #BDBDBD;
-  }
+  };
   :focus{
     border: 2px solid lightblue;
-  }
+  };
 `
 export const BoardContents = styled.textarea`
   width: 100%;
@@ -139,9 +139,8 @@ export const RegistButton = styled.button`
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 100px;
-  cursor: ${(props) => props.isActive? "pointer":""};
-  background-color : ${(props) => props.isActive? "#FFD600":"#ccc"};
-
+  cursor: ${(props) => (props.isActive || props.isEdit)? "pointer":""};
+  background-color : ${(props) => (props.isActive || props.isEdit)? "#FFD600":"#ccc"};
 `
 
 export const Error = styled.div`

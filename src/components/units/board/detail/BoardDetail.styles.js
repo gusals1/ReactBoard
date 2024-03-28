@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 
 export const Wrapper = styled.div`
-  width: 1200px;
-  margin: 100px auto;
+  max-width: 1200px;
+  margin: 100px auto 0;
 `;
 
 export const Main = styled.div`
@@ -48,7 +48,7 @@ export const IconWrapper = styled.div`
 `
 
 export const Clip = styled.img`
-  width: 32px;
+  max-width: 32px;
   height: 32px;
   margin-right: 5px;
 `
@@ -83,7 +83,7 @@ export const BoardContents = styled.p`
 
 export const BottomWrapper = styled.div`
   width: 100%;
-  margin: 50px 0;
+  margin: 80px 0;
   display: flex;
   flex-direction: row;
   justify-content: center;

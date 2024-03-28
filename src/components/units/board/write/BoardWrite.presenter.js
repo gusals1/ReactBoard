@@ -9,12 +9,16 @@ export default function BoardWriteUI(props){
         그래서 main 영역부터 작성하기
       */}
       <S.Main>
-        <S.BoardTitle>게시글 등록</S.BoardTitle>
+        <S.BoardTitle>게시글 {props.isEdit? "수정" : "등록"}</S.BoardTitle>
         
         <S.WriterSection>
           <S.FormSectionHalf>              
             <S.BoardLabel htmlFor="writer">작성자</S.BoardLabel>
-            <S.BoardInput type="text" id="writer" placeholder="작성자를 입력해주세요" onChange={props.onChangeWriter}/>
+            <S.BoardInput type="text" id="writer" placeholder="작성자를 입력해주세요" 
+              onChange={props.onChangeWriter} 
+              value={props.isEdit? props.data?.fetchBoard.writer : ""}
+              disabled = {props.isEdit? "disabled": ""}
+            />
             <S.Error>{props.writerError}</S.Error>
           </S.FormSectionHalf>
           <S.FormSectionHalf>
@@ -26,13 +30,19 @@ export default function BoardWriteUI(props){
 
         <S.FormSection>
           <S.BoardLabel htmlFor="title">제목</S.BoardLabel>
-          <S.BoardInput type="text" id="title" placeholder="제목을 입력해주세요" onChange={props.onChangeTitle}/>
+          <S.BoardInput type="text" id="title" placeholder="제목을 입력해주세요" 
+            onChange={props.onChangeTitle}
+            defaultValue={props.data? props.data.fetchBoard.title : ""}
+          />
           <S.Error>{props.titleError}</S.Error>
         </S.FormSection>
 
         <S.FormSection>
           <S.BoardLabel htmlFor="contents">내용</S.BoardLabel>
-          <S.BoardContents type="text" id="title" placeholder="내용을 입력해주세요" onChange={props.onChangeContents}></S.BoardContents>
+          <S.BoardContents type="text" id="title" placeholder="내용을 입력해주세요" 
+            onChange={props.onChangeContents}
+            defaultValue={props.data? props.data.fetchBoard.contents : ""}>
+          </S.BoardContents>
           <S.Error>{props.contentsError}</S.Error>
         </S.FormSection>
         <S.FormSection>
@@ -61,7 +71,13 @@ export default function BoardWriteUI(props){
           <S.RadioButton type="radio" id="image" name="radio-button" />
           <S.RadioLabel htmlFor="image">사진</S.RadioLabel>
         </S.FormSection>
-        <S.RegistButton onClick={props.onClickSubmit} isActive={props.isActive}>등록하기</S.RegistButton>
+        <S.RegistButton 
+          onClick={props.isEdit? props.onClickEdit : props.onClickSubmit} 
+          isActive={props.isActive}
+          isEdit={props.isEdit}
+          >
+            {props.isEdit? "수정" : "등록"}하기
+        </S.RegistButton>
       </S.Main>
     </S.Wrapper>  
   )
