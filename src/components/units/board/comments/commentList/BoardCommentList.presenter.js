@@ -18,8 +18,8 @@ export default function BoardCommentListUI(props){
               <S.CommentCreatedAt>{getDate(el.createdAt)}</S.CommentCreatedAt>
             </S.Comment>
             <S.EditIconBox>
-              <S.EditIcon src="/images/comment_edit.png" alt="" />
-              <S.DeleteIcon src="/images/comment_delete.png" alt="" />
+              <S.EditIcon src="/images/comment_edit.png" alt="edit" />
+              <S.DeleteIcon src="/images/comment_delete.png" alt="delete" id={el._id} onClick={props.onClickCommentDelete}/>
             </S.EditIconBox>
           </S.CommentBox>
         ))
