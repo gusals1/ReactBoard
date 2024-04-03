@@ -1,29 +1,29 @@
-import { getDate } from "../../../commons/libraries/util"
+import { getDate } from "../../../commons/libraries/util";
 import * as S from "./BoardDetail.styles";
-import { IBoardDetailUIProps } from "./BoardDetail.types";
+import type { IBoardDetailUIProps } from "./BoardDetail.types";
 
-
-export default function BoardDetailUI(props:IBoardDetailUIProps) {
-
-  return(
+export default function BoardDetailUI(props: IBoardDetailUIProps): JSX.Element {
+  return (
     <S.Wrapper>
       <S.Main>
         <S.MainHeader>
           <S.ProfileWrapper>
-            <S.ProfileImage src='../../images/avatar.png'/>
+            <S.ProfileImage src="../../images/avatar.png" />
             <S.Info>
               <S.Writer>{props.data?.fetchBoard?.writer}</S.Writer>
-              <S.CreatedAt>{getDate(props.data?.fetchBoard?.createdAt)}</S.CreatedAt>
+              <S.CreatedAt>
+                {getDate(props.data?.fetchBoard?.createdAt)}
+              </S.CreatedAt>
             </S.Info>
           </S.ProfileWrapper>
           <S.IconWrapper>
-            <S.Clip src='/images/clip.png'/>
-            <S.Location src='/images/location.png'/>
+            <S.Clip src="/images/clip.png" />
+            <S.Location src="/images/location.png" />
           </S.IconWrapper>
         </S.MainHeader>
         <S.UnderLine></S.UnderLine>
         <S.Body>
-          <S.BoardTitle>{props.data?.fetchBoard?.title}</S.BoardTitle> 
+          <S.BoardTitle>{props.data?.fetchBoard?.title}</S.BoardTitle>
           <S.BoardImage>{props.data?.fetchBoard?.images}</S.BoardImage>
           <S.BoardContents>{props.data?.fetchBoard?.contents}</S.BoardContents>
         </S.Body>
@@ -34,5 +34,5 @@ export default function BoardDetailUI(props:IBoardDetailUIProps) {
         <S.Button onClick={props.onClickDelete}>삭제하기</S.Button>
       </S.BottomWrapper>
     </S.Wrapper>
-  )
+  );
 }
