@@ -33,8 +33,8 @@ export default function BoardComment(): JSX.Element {
   ): void => {
     setCommentContents(e.target.value);
   };
-  const onChangeCommentRating = (e: ChangeEvent<HTMLDivElement>): void => {
-    console.log(setCommentRating);
+  const onChangeCommentRating = (rating: number): void => {
+    setCommentRating(rating);
   };
 
   const onClickCommentRegister = async (): Promise<void> => {

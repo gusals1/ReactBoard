@@ -101,7 +101,7 @@ export default function BoardDetail(): JSX.Element {
       if (error instanceof Error) alert(error.message);
     }
   };
-  console.log(data);
+
   return (
     <BoardDetailUI
       data={data}

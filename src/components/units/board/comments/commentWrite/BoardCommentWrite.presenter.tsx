@@ -1,5 +1,6 @@
 import * as S from "./BoardCommentWrite.styles";
 import type { IBoardCommentWriteUIProps } from "./BoardCommentWrite.types";
+import { Rate } from "antd";
 
 export default function BoardCommentWriteUI(
   props: IBoardCommentWriteUIProps
@@ -22,9 +23,12 @@ export default function BoardCommentWriteUI(
           placeholder="비밀번호"
           onChange={props.onChangeCommentPassword}
         ></S.PasswordInput>
-        <S.CommentRating onChange={props.onChangeCommentRating}>
-          ★ ★ ★ ★ ★
-        </S.CommentRating>
+
+        <Rate
+          allowHalf
+          defaultValue={0}
+          onChange={props.onChangeCommentRating}
+        />
       </S.WriterInfo>
 
       <S.CommentContainer>
