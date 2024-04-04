@@ -16,16 +16,15 @@ import type {
 export default function BoardCommentList(): JSX.Element {
   const router = useRouter();
 
-  if (typeof router.query.boardId !== "string") return <></>;
-
   const { data } = useQuery<
     Pick<IQuery, "fetchBoardComments">,
     IQueryFetchBoardCommentsArgs
-  >(FETCH_BOARD_COMMENTS, {
-    variables: {
-      boardId: router.query.boardId,
-    },
-  });
+  >(
+    FETCH_BOARD_COMMENTS,
+    typeof router.query.boardId === "string"
+      ? { variables: { boardId: router.query.boardId } }
+      : { skip: true }
+  );
   const [deleteBoardComment] = useMutation<
     Pick<IMutation, "deleteBoardComment">,
     IMutationDeleteBoardCommentArgs

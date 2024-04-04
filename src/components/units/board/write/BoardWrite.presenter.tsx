@@ -73,6 +73,7 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
             type="text"
             id="youtubeLink"
             placeholder="링크를 복사해주세요"
+            onChange={props.onChangeYoutubeUrl}
           />
         </S.FormSection>
         <S.FormSection>

@@ -29,6 +29,8 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   const [password, setPassword] = useState("");
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  // const [address, setAddress] = useState("");
 
   const [writerError, setWriterError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -83,6 +85,9 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       setIsActive(false);
     }
   };
+  const onChangeYoutubeUrl = (e: ChangeEvent<HTMLInputElement>): void => {
+    setYoutubeUrl(e.target.value);
+  };
 
   const onClickSubmit = async (): Promise<void> => {
     if (!writer) {
@@ -97,7 +102,6 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     if (!contents) {
       setContentsError("내용을 입력해주세요");
     }
-
     if (writer && password && title && contents) {
       try {
         const result = await createBoard({
@@ -107,6 +111,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
               password,
               title,
               contents,
+              youtubeUrl,
             },
           },
         });
@@ -165,6 +170,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       onChangeContents={onChangeContents}
       onClickSubmit={onClickSubmit}
       onClickEdit={onClickEdit}
+      onChangeYoutubeUrl={onChangeYoutubeUrl}
       isActive={isActive}
       isEdit={props.isEdit}
       data={props.data}

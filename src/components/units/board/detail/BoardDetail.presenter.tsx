@@ -26,6 +26,36 @@ export default function BoardDetailUI(props: IBoardDetailUIProps): JSX.Element {
           <S.BoardTitle>{props.data?.fetchBoard?.title}</S.BoardTitle>
           <S.BoardImage>{props.data?.fetchBoard?.images}</S.BoardImage>
           <S.BoardContents>{props.data?.fetchBoard?.contents}</S.BoardContents>
+          <S.YoutubeWrapper>
+            {props.data?.fetchBoard.youtubeUrl !== "" && (
+              <S.BoardYoutubePlayer
+                url={props.data?.fetchBoard?.youtubeUrl ?? ""}
+                width={486}
+                height={240}
+              ></S.BoardYoutubePlayer>
+            )}
+          </S.YoutubeWrapper>
+
+          <S.LikeWrapper>
+            <S.LikeInner>
+              <S.LikeIcon
+                src="/images/like.png"
+                alt="Like Count"
+                onClick={props.onClickCountUp}
+              />
+              <S.LikeCount>{props.data?.fetchBoard.likeCount}</S.LikeCount>
+            </S.LikeInner>
+            <S.LikeInner>
+              <S.LikeIcon
+                src="/images/dislike.png"
+                alt="dislike Count"
+                onClick={props.onClickCountDown}
+              />
+              <S.DisLikeCount>
+                {props.data?.fetchBoard.dislikeCount}
+              </S.DisLikeCount>
+            </S.LikeInner>
+          </S.LikeWrapper>
         </S.Body>
       </S.Main>
       <S.BottomWrapper>

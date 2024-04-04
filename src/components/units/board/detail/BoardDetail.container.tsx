@@ -1,30 +1,46 @@
 import BoardDetailUI from "./BoardDetail.presenter";
 import { useRouter } from "next/router";
-import { DELETE_BOARD, FETCH_BOARD } from "./BoardDetail.queries";
+import {
+  DELETE_BOARD,
+  FETCH_BOARD,
+  LIKE_BOARD,
+  DISLIKE_BOARD,
+} from "./BoardDetail.queries";
 import { useMutation, useQuery } from "@apollo/client";
 import type {
   IMutation,
   IMutationDeleteBoardArgs,
+  IMutationDislikeBoardArgs,
+  IMutationLikeBoardArgs,
   IQuery,
   IQueryFetchBoardArgs,
 } from "../../../../commons/types/generated/types";
 
 export default function BoardDetail(): JSX.Element {
   const router = useRouter();
-  if (typeof router.query.boardId !== "string") return <></>;
-  // router가 없거나 router.query.boardId가 string이 아니면 <></>을 리턴해줘라.
-  // 이 부분이 없으면 typescript에서 만약 boardId가 string이 아닌 경우 처리를 위해 명확하게 구분해줌.
-
+  // 원래대로 router.query.boardId가 string이 아니면 <></>을 반환했는데 오류가 생겨서 Query문 안에 조건문을 넣어줬다.
+  // 버젼때문에 생기는 오류일수도 있다고 한다.
   const { data } = useQuery<Pick<IQuery, "fetchBoard">, IQueryFetchBoardArgs>(
     FETCH_BOARD,
-    {
-      variables: { boardId: router.query.boardId },
-    }
+    typeof router.query.boardId === "string"
+      ? { variables: { boardId: router.query.boardId } }
+      : { skip: true }
   );
+
   const [deleteBoard] = useMutation<
     Pick<IMutation, "deleteBoard">,
     IMutationDeleteBoardArgs
   >(DELETE_BOARD);
+
+  const [likeBoard] = useMutation<
+    Pick<IMutation, "likeBoard">,
+    IMutationLikeBoardArgs
+  >(LIKE_BOARD);
+
+  const [dislikeBoard] = useMutation<
+    Pick<IMutation, "dislikeBoard">,
+    IMutationDislikeBoardArgs
+  >(DISLIKE_BOARD);
 
   const MoveToList = (): void => {
     void router.push("./");
@@ -35,10 +51,7 @@ export default function BoardDetail(): JSX.Element {
   };
   const onClickDelete = async (): Promise<void> => {
     try {
-      if (typeof router.query.boardId !== "string") {
-        return;
-      }
-
+      if (typeof router.query.boardId !== "string") return;
       await deleteBoard({
         variables: {
           boardId: router.query.boardId,
@@ -51,12 +64,52 @@ export default function BoardDetail(): JSX.Element {
     }
   };
 
+  const onClickCountUp = async (): Promise<void> => {
+    try {
+      if (typeof router.query.boardId !== "string") return;
+      await likeBoard({
+        variables: {
+          boardId: router.query.boardId,
+        },
+        refetchQueries: [
+          {
+            query: FETCH_BOARD,
+            variables: { boardId: router.query.boardId },
+          },
+        ],
+      });
+    } catch (error) {
+      if (error instanceof Error) alert(error.message);
+    }
+  };
+
+  const onClickCountDown = async (): Promise<void> => {
+    try {
+      if (typeof router.query.boardId !== "string") return;
+      await dislikeBoard({
+        variables: {
+          boardId: router.query.boardId,
+        },
+        refetchQueries: [
+          {
+            query: FETCH_BOARD,
+            variables: { boardId: router.query.boardId },
+          },
+        ],
+      });
+    } catch (error) {
+      if (error instanceof Error) alert(error.message);
+    }
+  };
+  console.log(data);
   return (
     <BoardDetailUI
       data={data}
       MoveToEdit={MoveToEdit}
       MoveToList={MoveToList}
       onClickDelete={onClickDelete}
+      onClickCountUp={onClickCountUp}
+      onClickCountDown={onClickCountDown}
     />
   );
 }
