@@ -1,5 +1,6 @@
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, MouseEvent } from "react";
 import type { IQuery } from "../../../../commons/types/generated/types";
+import type { Address } from "react-daum-postcode";
 
 export interface IBoardWriteProps {
   isEdit: boolean;
@@ -7,21 +8,24 @@ export interface IBoardWriteProps {
 }
 
 export interface IBoardWriteUIProps {
-  writer: string;
   writerError: string;
-  password: string;
   passwordError: string;
-  title: string;
   titleError: string;
-  contents: string;
   contentsError: string;
-  onChangeWriter: (event: ChangeEvent<HTMLInputElement>) => void;
-  onChangePassword: (event: ChangeEvent<HTMLInputElement>) => void;
-  onChangeTitle: (event: ChangeEvent<HTMLInputElement>) => void;
-  onChangeContents: (event: ChangeEvent<HTMLTextAreaElement>) => void;
-  onChangeYoutubeUrl: (event: ChangeEvent<HTMLInputElement>) => void;
-  onClickSubmit: () => void;
-  onClickEdit: () => void;
+  zipcode: string;
+  address: string;
+  onChangeWriter: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangePassword: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeTitle: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeContents: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onChangeYoutubeUrl: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeDetailAddress: (e: ChangeEvent<HTMLInputElement>) => void;
+  onClickSubmit: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClickEdit: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClickPost: () => void;
+  handleComplete: (data: Address) => void;
+  ModalToggle?: () => void;
+  isOpenModal: boolean;
   isActive: boolean;
   isEdit: boolean;
   data?: Pick<IQuery, "fetchBoard">;

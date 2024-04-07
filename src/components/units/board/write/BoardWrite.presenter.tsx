@@ -1,3 +1,5 @@
+import { Modal } from "antd";
+import DaumPostcodeEmbed from "react-daum-postcode";
 import * as S from "./BoardWrite.style";
 import type { IBoardWriteUIProps } from "./BoardWrite.types";
 
@@ -10,7 +12,6 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
       */}
       <S.Main>
         <S.BoardTitle>게시글 {props.isEdit ? "수정" : "등록"}</S.BoardTitle>
-
         <S.WriterSection>
           <S.FormSectionHalf>
             <S.BoardLabel htmlFor="writer">작성자</S.BoardLabel>
@@ -24,6 +25,7 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
             />
             <S.Error>{props.writerError}</S.Error>
           </S.FormSectionHalf>
+
           <S.FormSectionHalf>
             <S.BoardLabel htmlFor="pw">비밀번호</S.BoardLabel>
             <S.BoardInput
@@ -58,14 +60,46 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
           ></S.BoardContents>
           <S.Error>{props.contentsError}</S.Error>
         </S.FormSection>
+
         <S.FormSection>
           <S.BoardLabel htmlFor="address">주소</S.BoardLabel>
           <S.ZipCodeWrapper>
-            <S.ZipCodeInput placeholder="07725" />
-            <S.ZipCodeButton>우편번호 검색</S.ZipCodeButton>
+            <S.ZipCodeInput
+              placeholder="07725"
+              readOnly
+              defaultValue={
+                props.zipcode
+                  ? props.zipcode
+                  : props.data?.fetchBoard.boardAddress?.zipcode ?? ""
+              }
+            />
+            <S.ZipCodeButton onClick={props.onClickPost}>
+              우편번호 검색
+              {/* 모달창의 state를 받아와서 true라면 뒤에 있는 모달창을 열어준다. */}
+              {props.isOpenModal && (
+                <Modal open={props.isOpenModal}>
+                  <DaumPostcodeEmbed onComplete={props.handleComplete} />
+                </Modal>
+              )}
+            </S.ZipCodeButton>
           </S.ZipCodeWrapper>
-          <S.Address />
-          <S.Address />
+
+          <S.Address
+            readOnly
+            defaultValue={
+              props.address
+                ? props.address
+                : props.data?.fetchBoard.boardAddress?.address ?? ""
+            }
+          />
+          <S.Address
+            type="text"
+            placeholder="상세주소를 입력해주세요"
+            onChange={props.onChangeDetailAddress}
+            defaultValue={
+              props.data?.fetchBoard.boardAddress?.addressDetail ?? ""
+            }
+          />
         </S.FormSection>
         <S.FormSection>
           <S.BoardLabel htmlFor="youtubeLink">유튜브</S.BoardLabel>
@@ -74,6 +108,7 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
             id="youtubeLink"
             placeholder="링크를 복사해주세요"
             onChange={props.onChangeYoutubeUrl}
+            defaultValue={props.data?.fetchBoard.youtubeUrl ?? ""}
           />
         </S.FormSection>
         <S.FormSection>

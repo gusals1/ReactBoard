@@ -15,4 +15,9 @@ export const globalStyles = css`
     max-width: 100%;
     display: block;
   }
+  ul,
+  ol,
+  li {
+    list-style: none;
+  }
 `;

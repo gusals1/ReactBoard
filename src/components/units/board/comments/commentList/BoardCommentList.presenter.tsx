@@ -1,13 +1,27 @@
-import { getDate } from "../../../../commons/libraries/util";
+import { getDate } from "../../../../../commons/libraries/util";
 import * as S from "./BoardCommentList.styles";
 import type { IBoardCommentListUIProps } from "./BoardCommentList.types";
-import { Rate } from "antd";
+import { Modal, Rate } from "antd";
 
 export default function BoardCommentListUI(
   props: IBoardCommentListUIProps
 ): JSX.Element {
   return (
     <S.Wrapper>
+      {props.openDeleteModal && (
+        <Modal
+          title="비밀번호를 입력해주세요"
+          onOk={props.onClickCommentDelete}
+          onCancel={props.ModalToggle}
+          open={props.openDeleteModal}
+        >
+          <S.InputModal
+            type="password"
+            defaultValue={""}
+            onChange={props.onChangeModalPassword}
+          />
+        </Modal>
+      )}
       {props.data?.fetchBoardComments.map((el) => (
         <S.CommentBox key={el._id}>
           <S.Profile src="/images/comment_profile.png" alt="profile_img" />
@@ -26,7 +40,7 @@ export default function BoardCommentListUI(
               src="/images/comment_delete.png"
               alt="delete"
               id={el._id}
-              onClick={props.onClickCommentDelete}
+              onClick={props.onClickDeleteModal}
             />
           </S.EditIconBox>
         </S.CommentBox>

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import type { IRegisterButtonProps } from "./BoardWrite.types";
 
 export const Wrapper = styled.div`
-  width: 1200px;
+  max-width: 1200px;
   margin: 100px auto;
   overflow: hidden;
   box-shadow: 0px 0px 10px gray;
@@ -85,6 +85,7 @@ export const ZipCodeInput = styled.input`
   width: 77px;
   height: 52px;
   border: 1px solid #bdbdbd;
+  outline: none;
   margin-right: 16px;
   ::placeholder {
     text-align: center;
@@ -106,6 +107,12 @@ export const Address = styled.input`
   display: block;
   border: 1px solid #bdbdbd;
   height: 52px;
+  text-indent: 16px;
+  outline: none;
+  ::placeholder {
+    font-size: 16px;
+    color: #bdbdbd;
+  }
 `;
 
 export const UploadButton = styled.button`

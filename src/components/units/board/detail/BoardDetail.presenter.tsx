@@ -1,4 +1,5 @@
-import { getDate } from "../../../commons/libraries/util";
+import { Tooltip } from "antd";
+import { getDate } from "../../../../commons/libraries/util";
 import * as S from "./BoardDetail.styles";
 import type { IBoardDetailUIProps } from "./BoardDetail.types";
 
@@ -18,7 +19,14 @@ export default function BoardDetailUI(props: IBoardDetailUIProps): JSX.Element {
           </S.ProfileWrapper>
           <S.IconWrapper>
             <S.Clip src="/images/clip.png" />
-            <S.Location src="/images/location.png" />
+            <Tooltip
+              placement="topRight"
+              title={`${props.data?.fetchBoard.boardAddress?.address ?? ""} ${
+                props.data?.fetchBoard.boardAddress?.addressDetail ?? ""
+              }`}
+            >
+              <S.Location src="/images/location.png" />
+            </Tooltip>
           </S.IconWrapper>
         </S.MainHeader>
         <S.UnderLine></S.UnderLine>

@@ -64,16 +64,23 @@ export default function BoardComment(): JSX.Element {
     } catch (error) {
       if (error instanceof Error) alert(error.message);
     }
+    setCommentWriter("");
+    setCommentPassword("");
+    setCommentRating(0);
+    setCommentContents("");
   };
 
   return (
     <BoardCommentWriteUI
+      commentWriter={commentWriter}
+      commentPassword={commentPassword}
+      commentContents={commentContents}
+      commentRating={commentRating}
       onChangeCommentWriter={onChangeCommentWriter}
       onChangeCommentPassword={onChangeCommentPassword}
       onChangeCommentContents={onChangeCommentContents}
       onChangeCommentRating={onChangeCommentRating}
       onClickCommentRegister={onClickCommentRegister}
-      commentContents={commentContents}
     />
   );
 }

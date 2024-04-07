@@ -6,12 +6,19 @@ import type {
   IQueryFetchBoardArgs,
 } from "../../../../src/commons/types/generated/types";
 
+// 이 부분도 수정할때는 주소를 fetch한 내용이 보여야하기 때문에 fetch안에 주소를 넣어줘야함.
 export const FETCH_BOARD = gql`
   query fetchBoard($boardId: ID!) {
     fetchBoard(boardId: $boardId) {
       writer
       title
       contents
+      youtubeUrl
+      boardAddress {
+        zipcode
+        address
+        addressDetail
+      }
     }
   }
 `;

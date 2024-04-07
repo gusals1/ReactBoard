@@ -1,9 +1,10 @@
 import BoardWriteUI from "./BoardWrite.presenter";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, MouseEvent } from "react";
 import { useState } from "react";
 import { CREATE_BOARD, UPDATE_BOARD } from "./BoardWrite.queries";
+import { Modal } from "antd";
 import type {
   IMutation,
   IMutationCreateBoardArgs,
@@ -11,9 +12,28 @@ import type {
   IUpdateBoardInput,
 } from "../../../../commons/types/generated/types";
 import type { IBoardWriteProps } from "./BoardWrite.types";
+import type { Address } from "react-daum-postcode";
 
 export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   const router = useRouter();
+
+  const [isActive, setIsActive] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const [writer, setWriter] = useState("");
+  const [password, setPassword] = useState("");
+  const [title, setTitle] = useState("");
+  const [contents, setContents] = useState("");
+
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [address, setAddress] = useState("");
+  const [addressDetail, setAddressDetail] = useState("");
+
+  const [writerError, setWriterError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [titleError, setTitleError] = useState("");
+  const [contentsError, setContentsError] = useState("");
 
   const [createBoard] = useMutation<
     Pick<IMutation, "createBoard">,
@@ -24,72 +44,84 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     IMutationUpdateBoardArgs
   >(UPDATE_BOARD);
 
-  const [isActive, setIsActive] = useState(false);
-  const [writer, setWriter] = useState("");
-  const [password, setPassword] = useState("");
-  const [title, setTitle] = useState("");
-  const [contents, setContents] = useState("");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
-  // const [address, setAddress] = useState("");
+  const onChangeWriter = (e: ChangeEvent<HTMLInputElement>): void => {
+    setWriter(e.currentTarget.value);
 
-  const [writerError, setWriterError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [titleError, setTitleError] = useState("");
-  const [contentsError, setContentsError] = useState("");
-
-  const onChangeWriter = (event: ChangeEvent<HTMLInputElement>): void => {
-    setWriter(event.currentTarget.value);
-
-    if (event.target.value !== "") {
+    if (e.target.value !== "") {
       setWriterError("");
     }
-    if (event.target.value && password && title && contents) {
+
+    if (e.target.value && password && title && contents) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
   };
-  const onChangePassword = (event: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(event.target.value);
 
-    if (event.target.value !== "") {
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>): void => {
+    setPassword(e.target.value);
+
+    if (e.target.value !== "") {
       setPasswordError("");
     }
-    if (writer && event.target.value && title && contents) {
+    if (writer && e.target.value && title && contents) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
   };
-  const onChangeTitle = (event: ChangeEvent<HTMLInputElement>): void => {
-    setTitle(event.target.value);
+  const onChangeTitle = (e: ChangeEvent<HTMLInputElement>): void => {
+    setTitle(e.target.value);
 
-    if (event.target.value !== "") {
+    if (e.target.value !== "") {
       setTitleError("");
     }
-    if (writer && password && event.target.value && contents) {
+    if (writer && password && e.target.value && contents) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
   };
-  const onChangeContents = (event: ChangeEvent<HTMLTextAreaElement>): void => {
-    setContents(event.target.value);
+  const onChangeContents = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    setContents(e.target.value);
 
-    if (event.target.value !== "") {
+    if (e.target.value !== "") {
       setContentsError("");
     }
-    if (writer && password && title && event.target.value) {
+    if (writer && password && title && e.target.value) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
   };
+  // youtube url과 상세 주소 입력란의 데이터를 state로 받아오기 위한 함수
   const onChangeYoutubeUrl = (e: ChangeEvent<HTMLInputElement>): void => {
     setYoutubeUrl(e.target.value);
   };
 
-  const onClickSubmit = async (): Promise<void> => {
+  const onChangeDetailAddress = (e: ChangeEvent<HTMLInputElement>): void => {
+    setAddressDetail(e.target.value);
+  };
+  // address 입력 모달창에 사용되는 기능
+
+  /** 꺼져있던 address 모달을 state prev를 이용해 true로 바꿔줌. */
+  const onClickPost = (): void => {
+    setIsOpenModal((prev) => !prev);
+  };
+
+  /** 모달창(모달창은 라이브러리로 받아온 주소 입력창이다)이 켜지고
+   *  ok버튼을 눌렀을때 동작할 함수
+   */
+  const handleComplete = (data: Address): void => {
+    setZipcode(data.zonecode);
+    setAddress(data.jibunAddress);
+    setIsOpenModal(false);
+  };
+  /** 등록하기 버튼을 눌렀을때 작동 */
+  const onClickSubmit = async (
+    e: MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
+    e.preventDefault();
     if (!writer) {
       setWriterError("작성자를 입력해주세요");
     }
@@ -102,6 +134,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     if (!contents) {
       setContentsError("내용을 입력해주세요");
     }
+
     if (writer && password && title && contents) {
       try {
         const result = await createBoard({
@@ -111,30 +144,50 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
               password,
               title,
               contents,
-              youtubeUrl,
+              youtubeUrl, // youtube 인자 추가
+              boardAddress: {
+                // address mutation입력하는 형식 추가
+                zipcode,
+                address,
+                addressDetail,
+              },
             },
           },
         });
         if (result.data?.createBoard._id === undefined) {
-          alert("요청에 문제가 있습니다.");
+          Modal.error({ content: "요청에 문제가 있습니다" });
           return;
         }
+        Modal.success({ content: "게시글 등록에 성공하셨습니다" });
+
         void router.push(`/boards/${result?.data?.createBoard._id}`);
       } catch (error) {
-        if (error instanceof Error) alert(error.message);
+        if (error instanceof Error) {
+          Modal.error({ content: error.message });
+        }
       }
     }
   };
-  const onClickEdit = async (): Promise<void> => {
+  /** 수정하기 버튼 클릭시 발생하는 함수 */
+  const onClickEdit = async (
+    e: MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
+    e.preventDefault();
     if (!router || typeof router.query.boardId !== "string") return;
-    /* 값이 변경된 부분만 수정하기 위해서
-      updateBoardInput(수정하기에 들어가는 내용)과 동일한 항목을 가진 배열을 하나 생성하고
-      title과 contents의 true false값을 이용해서 값이 존재하면 updateBoardInput에 추가해주어 입력된 값만 수정하게 한다.
-    */
 
     const updateBoardInput: IUpdateBoardInput = {};
+    // 수정하기 페이지에서 각 항목의 내용이 있으면 updateBoardInput 배열에 추가한다.
     if (title) updateBoardInput.title = title;
     if (contents) updateBoardInput.contents = contents;
+    if (youtubeUrl) updateBoardInput.youtubeUrl = youtubeUrl;
+    // 주소 항목이 다 들어가있으면 배열 안에 주소 배열을 추가해서 그 배열안에 데이터 추가( 주소는 중첩객체 형태로 되어있음.)
+    if (zipcode && address && addressDetail) {
+      updateBoardInput.boardAddress = {};
+      if (zipcode) updateBoardInput.boardAddress.zipcode = zipcode;
+      if (address) updateBoardInput.boardAddress.address = address;
+      if (addressDetail)
+        updateBoardInput.boardAddress.addressDetail = addressDetail;
+    }
 
     try {
       const update = await updateBoard({
@@ -145,25 +198,27 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
         },
       });
       if (update.data?.updateBoard._id === undefined) {
-        alert("요청에 문제가 있습니다.");
+        Modal.error({ content: "요청에 문제가 있습니다" });
         return;
       }
+      Modal.success({ content: "게시글 수정에 성공하셨습니다" });
       await router.push(`/boards/${update.data?.updateBoard._id}`);
     } catch (error) {
-      if (error instanceof Error) alert(error.message);
+      if (error instanceof Error) {
+        Modal.error({ content: error.message });
+      }
     }
   };
 
   return (
     <BoardWriteUI
-      writer={writer}
       writerError={writerError}
-      password={password}
       passwordError={passwordError}
-      title={title}
       titleError={titleError}
-      contents={contents}
       contentsError={contentsError}
+      isOpenModal={isOpenModal}
+      zipcode={zipcode}
+      address={address}
       onChangeWriter={onChangeWriter}
       onChangePassword={onChangePassword}
       onChangeTitle={onChangeTitle}
@@ -171,6 +226,9 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       onClickSubmit={onClickSubmit}
       onClickEdit={onClickEdit}
       onChangeYoutubeUrl={onChangeYoutubeUrl}
+      onChangeDetailAddress={onChangeDetailAddress}
+      onClickPost={onClickPost}
+      handleComplete={handleComplete}
       isActive={isActive}
       isEdit={props.isEdit}
       data={props.data}

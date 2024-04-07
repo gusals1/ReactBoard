@@ -1,4 +1,4 @@
-import { getDate } from "../../../commons/libraries/util";
+import { getDate } from "../../../../commons/libraries/util";
 import * as S from "./BoardList.style";
 import type { IBoardListUIProps } from "./BoardList.types";
 

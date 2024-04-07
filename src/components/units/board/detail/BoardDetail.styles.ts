@@ -46,6 +46,7 @@ export const IconWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: relative;
 `;
 
 export const Clip = styled.img`
@@ -56,6 +57,26 @@ export const Clip = styled.img`
 export const Location = styled.img`
   width: 32px;
   height: 32px;
+`;
+export const LocationBox = styled.div`
+  position: absolute;
+  right: 4px;
+  bottom: 36px;
+  background-color: #000;
+  opacity: 0.4;
+  width: 350px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  gap: 5px;
+`;
+export const LocationText = styled.p`
+  font-size: 12px;
 `;
 export const UnderLine = styled.div`
   width: 100%;
