@@ -174,9 +174,10 @@ export const RegisterButton = styled.button`
   flex-direction: row;
   cursor: pointer;
   :hover {
-    background: #ccc;
+    background: #35c5f0;
     color: #fff;
     font-weight: bold;
+    border: #35c5f0;
     transition: all 0.1s ease;
   }
 `;

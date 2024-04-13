@@ -15,6 +15,7 @@ export interface IPagenation01Props {
 
 export interface IPagenationUIProps {
   page: number;
+  activeNum: number;
   lastPage: number;
   onClickPrev: () => void;
   onClickNext: () => void;

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
   max-width: 1200px;
-  margin: 20px auto 100px;
+  margin: 20px auto;
 `;
 export const CommentBox = styled.div`
   width: 100%;
@@ -11,9 +11,9 @@ export const CommentBox = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #bdbdbd;
-  margin-bottom: 20px;
 `;
 export const Profile = styled.img`
   max-width: 100%;
@@ -62,7 +62,7 @@ export const CommentContents = styled.p`
 `;
 export const CommentCreatedAt = styled.p`
   font-size: 12px;
-  margin-top: 20px;
+  margin-top: 5px;
   height: 24px;
   color: #bdbdbd;
 `;

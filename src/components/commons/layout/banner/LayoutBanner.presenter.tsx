@@ -4,7 +4,6 @@ import "slick-carousel/slick/slick-theme.css";
 import * as S from "./LayoutBanner.styles";
 export default function LayoutBannerUI(): JSX.Element {
   const settings = {
-    dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -19,13 +18,15 @@ export default function LayoutBannerUI(): JSX.Element {
   return (
     <S.BannerWrapper>
       <Slider {...settings}>
-        {/* 이 부분에 들어갈 배너를 못찾아서 아직 넣지 못했음. */}
-        <div>
-          <h3 style={{ background: "#ccc" }}>1</h3>
-        </div>
-        <div>
-          <h3 style={{ background: "#000" }}>1</h3>
-        </div>
+        <S.Banner>
+          <img src="/bannerImage/Banner1.jpg" alt="" />
+        </S.Banner>
+        <S.Banner>
+          <img src="/bannerImage/Banner2.jpg" alt="" />
+        </S.Banner>
+        <S.Banner>
+          <img src="/bannerImage/Banner3.jpg" alt="" />
+        </S.Banner>
       </Slider>
     </S.BannerWrapper>
   );

@@ -1,5 +1,8 @@
 import styled from "@emotion/styled";
 
+interface IPagenationProps {
+  isActive: boolean;
+}
 export const PageNumWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -10,9 +13,9 @@ export const PageNumWrapper = styled.div`
 export const PageNum = styled.p`
   margin: 0 8px;
   cursor: pointer;
-  :active {
-    font-weight: bold;
-  }
+  font-weight: ${(props: IPagenationProps) =>
+    props.isActive ? "bold" : "400"};
+  color: ${(props: IPagenationProps) => (props.isActive ? "#35C5F0" : "#000")};
 `;
 export const PrevArrow = styled.p`
   margin-right: 10px;
