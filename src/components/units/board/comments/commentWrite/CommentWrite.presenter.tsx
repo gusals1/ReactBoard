@@ -7,6 +7,7 @@ export default function BoardCommentWriteUI(
 ): JSX.Element {
   return (
     <S.Wrapper>
+      {/* 수정하기에는 댓글 부분이 필요없으니 조건문 달아줌 */}
       {!props.isEdit && (
         <S.CommentHeader>
           <S.CommentImg src="/images/icon_comment.png" alt="댓글 아이콘" />

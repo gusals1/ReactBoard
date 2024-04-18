@@ -18,22 +18,27 @@ import type { IBoardCommentProps } from "./CommentWrite.types";
 import { Modal } from "antd";
 
 export default function BoardComment(props: IBoardCommentProps): JSX.Element {
+  // 게시글의 댓글 등록
   const [commentWriter, setCommentWriter] = useState("");
   const [commentPassword, setCommentPassword] = useState("");
   const [commentContents, setCommentContents] = useState("");
   const [commentRating, setCommentRating] = useState(0.0);
 
   const router = useRouter();
+
+  // 댓글 등록
   const [createBoardComment] = useMutation<
     Pick<IMutation, "createBoardComment">,
     IMutationCreateBoardCommentArgs
   >(CREATE_BOARD_COMMENTS);
 
+  // 댓글 수정
   const [updateBoardComment] = useMutation<
     Pick<IMutation, "updateBoardComment">,
     IMutationUpdateBoardCommentArgs
   >(UPDATE_BOARD_COMMENT);
 
+  // 댓글 작성자, 비밀번호 별점 등을 state에 넣어주는 부분
   const onChangeCommentWriter = (e: ChangeEvent<HTMLInputElement>): void => {
     setCommentWriter(e.target.value);
   };
@@ -49,8 +54,11 @@ export default function BoardComment(props: IBoardCommentProps): JSX.Element {
     setCommentRating(rating);
   };
 
+  /** 댓글 등록 함수
+   *  댓글 등록후에 refetch를 통해 화면에 보여줌
+   */
   const onClickCommentRegister = async (): Promise<void> => {
-    if (commentPassword === "") return;
+    if (commentPassword === "") return; // 비밀번호가 없으면 return
     try {
       if (typeof router.query.boardId !== "string") {
         alert("시스템 오류발생");
@@ -81,10 +89,11 @@ export default function BoardComment(props: IBoardCommentProps): JSX.Element {
     setCommentRating(0);
     setCommentContents("");
   };
-
+  /** 댓글 수정 함수 */
   const onClickUpdateComment = async (): Promise<void> => {
     try {
       if (
+        // props 값들이 담기지 않았으면 return(오류막기)
         props.el === undefined ||
         props.isEdit === undefined ||
         props.setIsEdit === undefined
@@ -94,7 +103,7 @@ export default function BoardComment(props: IBoardCommentProps): JSX.Element {
         Modal.error({ content: "내용이 수정되지 않았습니다" });
         return;
       }
-
+      // 댓글도 게시글처럼 객체에 수정할 데이터를 넣어서 바인딩해준다
       const updateBoardCommentInput: IUpdateBoardCommentInput = {};
       if (commentContents !== "")
         updateBoardCommentInput.contents = commentContents;

@@ -6,10 +6,6 @@ import type { IBoardWriteUIProps } from "./BoardWrite.types";
 export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
   return (
     <S.Wrapper>
-      {/* 
-        header부분에는 이미지 슬라이더와 탭이 들어가게 됨.
-        그래서 main 영역부터 작성하기
-      */}
       <S.Main>
         <S.BoardTitle>게시글 {props.isEdit ? "수정" : "등록"}</S.BoardTitle>
         <S.WriterSection>
@@ -75,7 +71,7 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
             />
             <S.ZipCodeButton onClick={props.onClickPost}>
               우편번호 검색
-              {/* 모달창의 state를 받아와서 true라면 뒤에 있는 모달창을 열어준다. */}
+              {/* 모달창의 state를 받아와서 true라면 모달창을 열어준다. */}
               {props.isOpenModal && (
                 <Modal open={props.isOpenModal}>
                   <DaumPostcodeEmbed onComplete={props.handleComplete} />

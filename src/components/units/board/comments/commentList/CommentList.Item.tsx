@@ -19,22 +19,28 @@ import type {
 export default function CommentListItem(
   props: ICommentListItemProps
 ): JSX.Element {
+  // 댓글 목록, 하나의 컴포넌트로 분리해서 수정 삭제를 간편하게함.
+  // ==> 수정하기를 누르면 컴포넌트의 형태도 바껴야하기 때문
   const router = useRouter();
 
   const [isEdit, setIsEdit] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [password, setPassword] = useState("");
 
-  /** 토글 기능이 여러번 사용되서 그냥 함수로 만들어 한번에 사용 */
+  /** 모달창 토글 */
   const ModalToggle = (): void => {
     setOpenDeleteModal((prev) => !prev);
   };
-
+  // 댓글 삭제 mutation
   const [deleteBoardComment] = useMutation<
     Pick<IMutation, "deleteBoardComment">,
     IMutationDeleteBoardCommentArgs
   >(DELETE_BOARD_COMMENT);
 
+  /** 댓글 삭제 함수
+      휴지통 아이콘 클릭하면 onClickDeleteModal 실행
+      모달창 ok버튼을 누르면 이 함수 실행 모달창의 password값을 넣고 mutation 실행
+   */
   const onClickCommentDelete = async (
     e: MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
@@ -53,15 +59,10 @@ export default function CommentListItem(
       });
       ModalToggle(); // 모달창 꺼주기
     } catch (error) {
-      if (error instanceof Error) {
-        Modal.error({ content: error.message });
-      }
+      if (error instanceof Error) Modal.error({ content: error.message });
     }
   };
-  /** 댓글의 삭제 아이콘을 클릭하면 함수 호출
-   *  토글로 인해 open modal값이 true로 바뀌면서 모달창 나타남.
-   *  댓글 클릭시 id에 el_id를 보내고있기 때문에 그 값을 boardId에 다시 넣어주기 위해 state생성
-   */
+
   const onClickDeleteModal = (): void => {
     ModalToggle();
   };
@@ -70,6 +71,7 @@ export default function CommentListItem(
     setPassword(e.target.value);
   };
 
+  /** 수정하면 state를 변경해 컴포넌트 바꾸기 */
   const onClickUpdateComments = (): void => {
     setIsEdit((prev) => !prev);
   };

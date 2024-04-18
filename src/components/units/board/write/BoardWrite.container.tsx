@@ -15,128 +15,121 @@ import type { IBoardWriteProps } from "./BoardWrite.types";
 import type { Address } from "react-daum-postcode";
 
 export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
+  // 게시글 작성 페이지 (작성이기 때문에 isEdit값은 false)
   const router = useRouter();
 
+  // 버튼 활성화, 주소창 모달을 위한 state
   const [isActive, setIsActive] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
+  // 게시글 필수항목 state
   const [writer, setWriter] = useState("");
   const [password, setPassword] = useState("");
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
-
+  // 게시글 부가항목 state
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
-
+  // 게시글 작성 안했을시 오류 보여주는 state
   const [writerError, setWriterError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [titleError, setTitleError] = useState("");
   const [contentsError, setContentsError] = useState("");
 
+  // 게시글 작성 mutation
   const [createBoard] = useMutation<
     Pick<IMutation, "createBoard">,
     IMutationCreateBoardArgs
   >(CREATE_BOARD);
+
+  // 게시글 수정 mutation
   const [updateBoard] = useMutation<
     Pick<IMutation, "updateBoard">,
     IMutationUpdateBoardArgs
   >(UPDATE_BOARD);
 
+  /** 작성자 input창에 입력시 나타나는 이벤트 */
   const onChangeWriter = (e: ChangeEvent<HTMLInputElement>): void => {
-    setWriter(e.currentTarget.value);
+    setWriter(e.currentTarget.value); // 입력에 따른 writer 값 설정
+    // 오류 발생했다가 입력하면 Error를 지워주기 위한 조건문
+    if (e.target.value !== "") setWriterError("");
 
-    if (e.target.value !== "") {
-      setWriterError("");
-    }
-
-    if (e.target.value && password && title && contents) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
-    }
+    // 값 입력시 전부다 입력되어있다면 등록 버튼 활성화 아니면 비활성화
+    if (e.target.value && password && title && contents) setIsActive(true);
+    else setIsActive(false);
   };
-
+  /** 비밀번호 input창에 입력시 나타나는 이벤트 */
   const onChangePassword = (e: ChangeEvent<HTMLInputElement>): void => {
-    setPassword(e.target.value);
+    setPassword(e.target.value); // 입력에 따른 password 값 설정
+    // 오류 발생했다가 입력하면 Error를 지워주기 위한 조건문
+    if (e.target.value !== "") setPasswordError("");
 
-    if (e.target.value !== "") {
-      setPasswordError("");
-    }
-    if (writer && e.target.value && title && contents) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
-    }
+    // 값 입력시 전부다 입력되어있다면 등록 버튼 활성화 아니면 비활성화
+    if (writer && e.target.value && title && contents) setIsActive(true);
+    else setIsActive(false);
   };
+
+  /** 제목 input창에 입력시 나타나는 이벤트 */
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>): void => {
-    setTitle(e.target.value);
+    setTitle(e.target.value); // 입력에 따른 title 값 설정
+    // 오류 발생했다가 입력하면 Error를 지워주기 위한 조건문
+    if (e.target.value !== "") setTitleError("");
 
-    if (e.target.value !== "") {
-      setTitleError("");
-    }
-    if (writer && password && e.target.value && contents) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
-    }
+    // 값 입력시 전부다 입력되어있다면 등록 버튼 활성화 아니면 비활성화
+    if (writer && password && e.target.value && contents) setIsActive(true);
+    else setIsActive(false);
   };
+
+  /** 내용 input창에 입력시 나타나는 이벤트 */
   const onChangeContents = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    setContents(e.target.value);
+    setContents(e.target.value); // 입력에 따른 contents 값 설정
+    // 오류 발생했다가 입력하면 Error를 지워주기 위한 조건문
+    if (e.target.value !== "") setContentsError("");
 
-    if (e.target.value !== "") {
-      setContentsError("");
-    }
-    if (writer && password && title && e.target.value) {
-      setIsActive(true);
-    } else {
-      setIsActive(false);
-    }
+    // 값 입력시 전부다 입력되어있다면 등록 버튼 활성화 아니면 비활성화
+    if (writer && password && title && e.target.value) setIsActive(true);
+    else setIsActive(false);
   };
-  // youtube url과 상세 주소 입력란의 데이터를 state로 받아오기 위한 함수
+
   const onChangeYoutubeUrl = (e: ChangeEvent<HTMLInputElement>): void => {
     setYoutubeUrl(e.target.value);
   };
-
   const onChangeDetailAddress = (e: ChangeEvent<HTMLInputElement>): void => {
     setAddressDetail(e.target.value);
   };
-  // address 입력 모달창에 사용되는 기능
 
-  /** 꺼져있던 address 모달을 state prev를 이용해 true로 바꿔줌. */
+  /** modal창의 boolean값을 state prev를 통해 바꿔주면서 on off 해준다 */
   const onClickPost = (): void => {
     setIsOpenModal((prev) => !prev);
   };
 
-  /** 모달창(모달창은 라이브러리로 받아온 주소 입력창이다)이 켜지고
-   *  ok버튼을 눌렀을때 동작할 함수
+  /** 
+    모달창의 ok버튼을 눌렀을때 동작할 함수
+    데이터를 state의 저장하고 모달창을 false로 닫아준다
    */
   const handleComplete = (data: Address): void => {
     setZipcode(data.zonecode);
     setAddress(data.jibunAddress);
     setIsOpenModal(false);
   };
-  /** 등록하기 버튼을 눌렀을때 작동 */
+
+  /** 게시글의 등록하기 버튼을 눌렀을때 호출하는 함수
+   *  오류검사, board api요청 페이지 이동등의 기능이 있다.
+   */
   const onClickSubmit = async (
     e: MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
     e.preventDefault();
-    if (!writer) {
-      setWriterError("작성자를 입력해주세요");
-    }
-    if (!password) {
-      setPasswordError("비밀번호를 입력해주세요");
-    }
-    if (!title) {
-      setTitleError("제목을 입력해주세요");
-    }
-    if (!contents) {
-      setContentsError("내용을 입력해주세요");
-    }
+    if (!writer) setWriterError("작성자를 입력해주세요");
+    if (!password) setPasswordError("비밀번호를 입력해주세요");
+    if (!title) setTitleError("제목을 입력해주세요");
+    if (!contents) setContentsError("내용을 입력해주세요");
 
     if (writer && password && title && contents) {
       try {
+        // createBoard({ variables : api요청에 넣을 값 }) 을 result에 저장
         const result = await createBoard({
           variables: {
             createBoardInput: {
@@ -144,9 +137,9 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
               password,
               title,
               contents,
-              youtubeUrl, // youtube 인자 추가
+              youtubeUrl,
               boardAddress: {
-                // address mutation입력하는 형식 추가
+                // address는 객체 형태로 데이터를 받음
                 zipcode,
                 address,
                 addressDetail,
@@ -154,33 +147,35 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
             },
           },
         });
+        // create요청이 실패하면 _id 속성이 없으니 error발생 아니면 성공
         if (result.data?.createBoard._id === undefined) {
           Modal.error({ content: "요청에 문제가 있습니다" });
           return;
         }
         Modal.success({ content: "게시글 등록에 성공하셨습니다" });
-
+        // 등록이 성공하면 등록한 게시글 상세 페이지 이동
         void router.push(`/boards/${result?.data?.createBoard._id}`);
       } catch (error) {
-        if (error instanceof Error) {
-          Modal.error({ content: error.message });
-        }
+        if (error instanceof Error) Modal.error({ content: error.message });
       }
     }
   };
-  /** 수정하기 버튼 클릭시 발생하는 함수 */
+
+  /** 수정하기 버튼 클릭 함수 */
   const onClickEdit = async (
     e: MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
-    e.preventDefault();
+    e.preventDefault(); // 버튼 클릭시 스크롤 이동을 막기 위해 사용
+
+    // useRouter가 동작하지 않아 값이 읽히지 않을때를 대비
     if (!router || typeof router.query.boardId !== "string") return;
 
+    // updateBoardInput 형식으로 데이터를 받기때문에 수정할 데이터 객체를 하나 생성함.
     const updateBoardInput: IUpdateBoardInput = {};
-    // 수정하기 페이지에서 각 항목의 내용이 있으면 updateBoardInput 배열에 추가한다.
     if (title) updateBoardInput.title = title;
     if (contents) updateBoardInput.contents = contents;
     if (youtubeUrl) updateBoardInput.youtubeUrl = youtubeUrl;
-    // 주소 항목이 다 들어가있으면 배열 안에 주소 배열을 추가해서 그 배열안에 데이터 추가( 주소는 중첩객체 형태로 되어있음.)
+    // 주소에 들어갈 항목이 다 있으면 address객체 생성해서 데이터 넣어줌
     if (zipcode && address && addressDetail) {
       updateBoardInput.boardAddress = {};
       if (zipcode) updateBoardInput.boardAddress.zipcode = zipcode;
@@ -190,23 +185,21 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     }
 
     try {
-      const update = await updateBoard({
+      const updateResult = await updateBoard({
         variables: {
           boardId: router.query.boardId,
           password,
           updateBoardInput,
         },
       });
-      if (update.data?.updateBoard._id === undefined) {
+      if (updateResult.data?.updateBoard._id === undefined) {
         Modal.error({ content: "요청에 문제가 있습니다" });
         return;
       }
       Modal.success({ content: "게시글 수정에 성공하셨습니다" });
-      await router.push(`/boards/${update.data?.updateBoard._id}`);
+      void router.push(`/boards/${updateResult.data?.updateBoard._id}`);
     } catch (error) {
-      if (error instanceof Error) {
-        Modal.error({ content: error.message });
-      }
+      if (error instanceof Error) Modal.error({ content: error.message });
     }
   };
 
