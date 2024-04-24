@@ -2,7 +2,7 @@ import BoardWriteUI from "./BoardWrite.presenter";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import type { ChangeEvent, MouseEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CREATE_BOARD, UPDATE_BOARD } from "./BoardWrite.queries";
 import { Modal } from "antd";
 import type {
@@ -32,6 +32,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   const [zipcode, setZipcode] = useState("");
   const [address, setAddress] = useState("");
   const [addressDetail, setAddressDetail] = useState("");
+  const [files, setFiles] = useState(["", "", ""]);
   // 게시글 작성 안했을시 오류 보여주는 state
   const [writerError, setWriterError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -105,6 +106,28 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     setIsOpenModal((prev) => !prev);
   };
 
+  /*  files state를 prop로 넘겨주고 그 값을 함수의 인자로 다시 받아서
+      스프레드 연산자를 통해서 새로운 배열을 만들고 그 값을 state에 교환해서 넣는다
+  */
+  const onChangeFiles = (file: string, index: number): void => {
+    // file값은 url값 index는 해당하는 number값.
+    const newFiles = [...files];
+    // newFiles = ["","",""]
+    newFiles[index] = file;
+    // newFiles = ["url","",""]
+    setFiles(newFiles);
+    // files === newFiles
+  };
+
+  useEffect(() => {
+    // images 변수에 fetch한 이미지 데이터를 받는다.
+    const images = props.data?.fetchBoard.images;
+    // image가 빈값이거나 indefined가 아니면 setFiles에 이미지 데이터값을 채워준다.
+    // 수정하기로 들어오면 files state값은 다시 빈 배열이 되어있기 때문
+    // fetchBoard의 데이터가 변경될때마다 이 구문을 실행시켜줌.
+    if (images !== undefined && images !== null) setFiles([...images]);
+  }, [props.data]);
+
   /** 
     모달창의 ok버튼을 눌렀을때 동작할 함수
     데이터를 state의 저장하고 모달창을 false로 닫아준다
@@ -144,6 +167,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
                 address,
                 addressDetail,
               },
+              images: [...files],
             },
           },
         });
@@ -167,6 +191,13 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   ): Promise<void> => {
     e.preventDefault(); // 버튼 클릭시 스크롤 이동을 막기 위해 사용
 
+    // files는 ["url","",""] 로 되어있기때문에 복사하려면 스프레드 연산자등을 사용해야함.
+    // 그래서 간편하게 JSON.stringify로 값을 변환해서 비교함
+    const currentFile = JSON.stringify(files);
+    const defaultFile = JSON.stringify(props.data?.fetchBoard.images);
+    // currentFile = files의 JSON값, defaultFile = fetchBoard한 JSON값
+    // 이 두개를 비교한 값을 isChangeFile에 저장 ==> useEffect에 의해서 currentFile은 사진이 바뀌면 변경됨
+    const isChangedFile = currentFile !== defaultFile;
     // useRouter가 동작하지 않아 값이 읽히지 않을때를 대비
     if (!router || typeof router.query.boardId !== "string") return;
 
@@ -183,6 +214,8 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       if (addressDetail)
         updateBoardInput.boardAddress.addressDetail = addressDetail;
     }
+    // 원래 files의 값과 바뀐 file의 값이 다르면 images에 바뀐 files값을 넣어줌
+    if (isChangedFile) updateBoardInput.images = files;
 
     try {
       const updateResult = await updateBoard({
@@ -212,6 +245,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       isOpenModal={isOpenModal}
       zipcode={zipcode}
       address={address}
+      files={files}
       onChangeWriter={onChangeWriter}
       onChangePassword={onChangePassword}
       onChangeTitle={onChangeTitle}
@@ -222,6 +256,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       onChangeDetailAddress={onChangeDetailAddress}
       onClickPost={onClickPost}
       handleComplete={handleComplete}
+      onChangeFiles={onChangeFiles}
       isActive={isActive}
       isEdit={props.isEdit}
       data={props.data}

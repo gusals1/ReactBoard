@@ -2,6 +2,8 @@ import { Modal } from "antd";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import * as S from "./BoardWrite.style";
 import type { IBoardWriteUIProps } from "./BoardWrite.types";
+import UploadImage from "../../../commons/uploadImage/uploadImage.container";
+import { v4 as uuidv4 } from "uuid";
 
 export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
   return (
@@ -109,9 +111,17 @@ export default function BoardWriteUI(props: IBoardWriteUIProps): JSX.Element {
         </S.FormSection>
         <S.FormSection>
           <S.BoardLabel>사진 첨부</S.BoardLabel>
-          <S.UploadButton>+</S.UploadButton>
-          <S.UploadButton>+</S.UploadButton>
-          <S.UploadButton>+</S.UploadButton>
+          {/* 이미지 업로드 컴포넌트 분리 */}
+          <S.ImageWrapper>
+            {props.files.map((el, index) => (
+              <UploadImage
+                key={uuidv4()}
+                files={el} // 여기로 들어온 el값은 ""값 기본값이기 때문에
+                index={index}
+                onChangeFiles={props.onChangeFiles}
+              />
+            ))}
+          </S.ImageWrapper>
         </S.FormSection>
         <S.FormSection>
           <S.BoardLabel>메인 설정</S.BoardLabel>

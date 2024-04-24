@@ -14,6 +14,7 @@ export interface IBoardWriteUIProps {
   contentsError: string;
   zipcode: string;
   address: string;
+  files: string[];
   onChangeWriter: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangePassword: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeTitle: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -25,6 +26,7 @@ export interface IBoardWriteUIProps {
   onClickPost: () => void;
   handleComplete: (data: Address) => void;
   ModalToggle?: () => void;
+  onChangeFiles: (file: string, index: number) => void;
   isOpenModal: boolean;
   isActive: boolean;
   isEdit: boolean;

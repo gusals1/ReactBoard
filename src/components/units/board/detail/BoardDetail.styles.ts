@@ -88,8 +88,15 @@ export const UnderLine = styled.div`
 export const Body = styled.div`
   width: 100%;
 `;
-export const BoardImage = styled.img`
+export const BoardImageWrapper = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+export const BoardImage = styled.img`
+  width: 50%;
+  height: auto;
   margin: auto;
 `;
 export const BoardTitle = styled.h2`

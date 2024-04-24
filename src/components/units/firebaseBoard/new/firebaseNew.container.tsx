@@ -4,6 +4,7 @@ import FireBaseNewUI from "./firebaseNew.presenter";
 import type { ChangeEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { Modal } from "antd";
 
 export default function FireBaseNew(): JSX.Element {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function FireBaseNew(): JSX.Element {
       title,
       contents,
     });
-    alert("데이터 등록 성공");
+    Modal.success({ content: "데이터 등록 성공" });
     void router.push("/firebaseBoard");
   };
 

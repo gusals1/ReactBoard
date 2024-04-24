@@ -43,6 +43,13 @@ export const BoardLabel = styled.label`
   font-weight: 500;
   margin-bottom: 20px;
 `;
+export const ImageWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 24px;
+`;
+
 export const BoardInput = styled.input`
   width: 100%;
   height: 52px;
@@ -113,17 +120,6 @@ export const Address = styled.input`
     font-size: 16px;
     color: #bdbdbd;
   }
-`;
-
-export const UploadButton = styled.button`
-  width: 78px;
-  height: 78px;
-  background: #bdbdbd;
-  border: none;
-  margin-right: 24px;
-  font-size: 24px;
-  color: #4f4f4f;
-  cursor: pointer;
 `;
 
 export const RadioButton = styled.input`
