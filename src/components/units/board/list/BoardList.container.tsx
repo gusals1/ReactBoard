@@ -7,12 +7,12 @@ import type {
   IQueryFetchBoardsArgs,
   IQueryFetchBoardsCountArgs,
 } from "../../../../commons/types/generated/types";
-import type { MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 
 export default function BoardListPage(): JSX.Element {
   // 게시글 목록 페이지
   const router = useRouter();
-
+  const [keyWord, setKeyWord] = useState("");
   // fetchBoards 쿼리를 useQuery를 통해 가져오고 data안에 저장, refetch 기능도 사용할수 있게 명시(?)
   const { data, refetch } = useQuery<
     Pick<IQuery, "fetchBoards">,
@@ -21,7 +21,7 @@ export default function BoardListPage(): JSX.Element {
 
   // fetchBoardCount 쿼리를 data에 저장 fetchBoards의 결과도 data에 저장되니 dataBoardCount라는 이름으로 변경
   // fetchBoardCount - 게시글 개수를 저장하고 있는 데이터
-  const { data: dataBoardCount } = useQuery<
+  const { data: dataBoardCount, refetch: refetchBoardCount } = useQuery<
     Pick<IQuery, "fetchBoardsCount">,
     IQueryFetchBoardsCountArgs
   >(FETCH_BOARDS_COUNT);
@@ -38,6 +38,10 @@ export default function BoardListPage(): JSX.Element {
     void router.push(`/boards/${event.currentTarget.id}`);
   };
 
+  const onAccentKeyword = (keyword: string): void => {
+    setKeyWord(keyword);
+  };
+
   return (
     <BoardListUI
       data={data}
@@ -45,6 +49,9 @@ export default function BoardListPage(): JSX.Element {
       lastPage={lastPageNum}
       onClickNew={onClickNew}
       onClickDetail={onClickDetail}
+      refetchBoardCount={refetchBoardCount}
+      onAccentKeyword={onAccentKeyword}
+      keyWord={keyWord}
     />
   );
 }

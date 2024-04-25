@@ -1,26 +1,22 @@
-import type { MouseEvent } from "react";
+import type { ApolloQueryResult } from "@apollo/client";
 import type {
   IQuery,
   IQueryFetchBoardsArgs,
   IQueryFetchBoardsCountArgs,
-} from "../../../../commons/types/generated/types";
-import type { ApolloQueryResult } from "@apollo/client";
+} from "../../../commons/types/generated/types";
+import type { ChangeEvent } from "react";
 
-export interface IBoardListUIProps {
+export interface ISearchBarProps {
   onAccentKeyword: (keyword: string) => void;
-  lastPage: number;
-  onClickNew: () => void;
-  onClickDetail: (event: MouseEvent<HTMLDivElement>) => void;
-  data?: Pick<IQuery, "fetchBoards">;
   refetchBoardCount: (
     variables?: Partial<IQueryFetchBoardsCountArgs> | undefined
   ) => Promise<ApolloQueryResult<Pick<IQuery, "fetchBoardsCount">>>;
+
   refetch: (
     variables?: Partial<IQueryFetchBoardsArgs> | undefined
   ) => Promise<ApolloQueryResult<Pick<IQuery, "fetchBoards">>>;
-  keyWord: string;
 }
 
-export interface MatchKeywordProps {
-  isMatch: boolean;
+export interface ISearchBarUIProps {
+  onChangeSearch: (e: ChangeEvent<HTMLInputElement>) => void;
 }

@@ -119,12 +119,16 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     // files === newFiles
   };
 
+  /*  수정하기 페이지가 처음 실행될때, props.data가 실행될때, 수정하기 페이지가 사라지기 전에 실행됨. 
+      files의 초기값은 ["","",""] 이지만 useEffect로 files의 값을 기존의 값으로 채워주도록 했다.
+      fetchBoard.Data를 images의 저장하고 그 값이 null이 아닐때 setFile로 값을 수정해서 수정페이지 초기화면에 기존의 이미지를 띄워줬다
+      따라서 새로운 이미지를 추가할때 동작하는 것이 아니라 fetch할때 동작하는것이다.
+  */
   useEffect(() => {
     // images 변수에 fetch한 이미지 데이터를 받는다.
     const images = props.data?.fetchBoard.images;
+
     // image가 빈값이거나 indefined가 아니면 setFiles에 이미지 데이터값을 채워준다.
-    // 수정하기로 들어오면 files state값은 다시 빈 배열이 되어있기 때문
-    // fetchBoard의 데이터가 변경될때마다 이 구문을 실행시켜줌.
     if (images !== undefined && images !== null) setFiles([...images]);
   }, [props.data]);
 

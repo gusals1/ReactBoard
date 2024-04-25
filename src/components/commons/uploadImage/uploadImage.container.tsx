@@ -6,9 +6,16 @@ import type { ChangeEvent } from "react";
 import type { IUploadImageProps } from "./uploadImage.types";
 import { checkValidationImage } from "./uploadImage.validation";
 import { Modal } from "antd";
+import type {
+  IMutation,
+  IMutationUploadFileArgs,
+} from "../../../commons/types/generated/types";
 
 export default function UploadImage(props: IUploadImageProps): JSX.Element {
-  const [uploadFile] = useMutation(UPLOAD_FILE);
+  const [uploadFile] = useMutation<
+    Pick<IMutation, "uploadFile">,
+    IMutationUploadFileArgs
+  >(UPLOAD_FILE);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const onClickUpload = (): void => {
@@ -27,7 +34,7 @@ export default function UploadImage(props: IUploadImageProps): JSX.Element {
       const result = await uploadFile({
         variables: { file },
       });
-      props.onChangeFiles(result.data?.uploadFile.url, props.index);
+      props.onChangeFiles(result.data?.uploadFile.url ?? "", props.index);
     } catch (error) {
       if (error instanceof Error) Modal.error({ content: error.message });
     }

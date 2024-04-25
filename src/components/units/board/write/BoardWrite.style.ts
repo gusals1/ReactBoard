@@ -93,6 +93,7 @@ export const ZipCodeInput = styled.input`
   height: 52px;
   border: 1px solid #bdbdbd;
   outline: none;
+  cursor: auto;
   margin-right: 16px;
   ::placeholder {
     text-align: center;
@@ -116,6 +117,7 @@ export const Address = styled.input`
   height: 52px;
   text-indent: 16px;
   outline: none;
+  cursor: auto;
   ::placeholder {
     font-size: 16px;
     color: #bdbdbd;

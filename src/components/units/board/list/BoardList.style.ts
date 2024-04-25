@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import type { MatchKeywordProps } from "./BoardList.types";
 
 export const Wrapper = styled.div`
   max-width: 1200px;
@@ -82,9 +83,9 @@ export const SearchArea = styled.div`
 export const SearchBox = styled.input`
   height: 52px;
   background: url("/images/search.png") no-repeat 20px center;
-  background-color: #ccc;
+  background-color: #eee;
   border-radius: 10px;
-  text-indent: 55px;
+  text-indent: 60px;
   border: none;
   outline: none;
   flex-grow: 5;
@@ -184,4 +185,10 @@ export const RegisterButton = styled.button`
 export const Icon = styled.img`
   max-width: 100%;
   margin-right: 8px;
+`;
+
+export const MatchKeyword = styled.span`
+  background: ${(props: MatchKeywordProps) =>
+    props.isMatch ? "#85dfff" : "none"};
+  color: ${(props: MatchKeywordProps) => (props.isMatch ? "#fff" : "none")};
 `;

@@ -1,8 +1,11 @@
 import { getDate } from "../../../../commons/libraries/util";
 import * as S from "./BoardList.style";
 import type { IBoardListUIProps } from "./BoardList.types";
-import Pagenation01 from "../../../commons/pagination/pagenation.container";
+import Pagenation01 from "../../../commons/pagenation/pagenation.container";
+import SearchBar from "../../../commons/searchbar/searchBar.container";
+import { v4 as uuidv4 } from "uuid";
 export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
+  const secretKey = "!#@!@$";
   return (
     <S.Wrapper>
       <S.Title>베스트 게시글</S.Title>
@@ -32,7 +35,12 @@ export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
       </S.TopBox>
       {/* 제목, 날짜, 검색버튼 */}
       <S.SearchArea>
-        <S.SearchBox type="search" placeholder="제목을 검색해주세요" />
+        <SearchBar
+          refetch={props.refetch}
+          refetchBoardCount={props.refetchBoardCount}
+          onAccentKeyword={props.onAccentKeyword}
+        />
+
         <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
         <S.SearchButton>검색하기</S.SearchButton>
       </S.SearchArea>
@@ -48,7 +56,19 @@ export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
         {props.data?.fetchBoards.map((el) => (
           <S.TableRow key={el._id} id={el._id} onClick={props.onClickDetail}>
             <S.PostId>{el._id.slice(-4).toUpperCase()}</S.PostId>
-            <S.PostTitle>{el.title}</S.PostTitle>
+            <S.PostTitle>
+              {el.title
+                .replaceAll(
+                  props.keyWord,
+                  `${secretKey}${props.keyWord}${secretKey}`
+                )
+                .split(secretKey)
+                .map((el) => (
+                  <S.MatchKeyword key={uuidv4()} isMatch={props.keyWord === el}>
+                    {el}
+                  </S.MatchKeyword>
+                ))}
+            </S.PostTitle>
             <S.PostWriter>{el.writer}</S.PostWriter>
             <S.PostDate>{getDate(el.createdAt)}</S.PostDate>
           </S.TableRow>

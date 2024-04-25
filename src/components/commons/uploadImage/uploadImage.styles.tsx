@@ -17,4 +17,5 @@ export const UploadImage = styled.img`
   width: 78px;
   height: 78px;
   border: none;
+  cursor: pointer;
 `;
