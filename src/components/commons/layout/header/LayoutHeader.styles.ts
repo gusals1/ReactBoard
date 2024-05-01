@@ -15,20 +15,42 @@ export const HeaderInner = styled.div`
 export const Logo = styled.img`
   max-width: 100%;
   object-fit: none;
+  cursor: pointer;
 `;
 
 export const ProfileWrapper = styled.div`
   display: flex;
   flex-direction: row;
   gap: 12px;
+  align-items: center;
 `;
 export const Profile = styled.img`
   max-width: 100%;
   object-fit: none;
 `;
+
+export const UserInfo = styled.p`
+  font-size: 14px;
+`;
+export const Strong = styled.strong`
+  margin-right: 5px;
+  font-size: 16px;
+`;
+
 export const ProfileMore = styled.img`
   max-width: 100%;
   object-fit: none;
+`;
+
+export const LogoutBtn = styled.button`
+  padding: 8px;
+  background: #85dfff;
+  outline: none;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
 `;
 
 export const BtnWrapper = styled.div`
