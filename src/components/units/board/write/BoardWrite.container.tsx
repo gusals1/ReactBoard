@@ -13,8 +13,9 @@ import type {
 } from "../../../../commons/types/generated/types";
 import type { IBoardWriteProps } from "./BoardWrite.types";
 import type { Address } from "react-daum-postcode";
+import { withAuth } from "../../../commons/withAuth/withAuth";
 
-export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
+function BoardWrite(props: IBoardWriteProps): JSX.Element {
   // 게시글 작성 페이지 (작성이기 때문에 isEdit값은 false)
   const router = useRouter();
 
@@ -267,3 +268,5 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
     />
   );
 }
+
+export default withAuth(BoardWrite);

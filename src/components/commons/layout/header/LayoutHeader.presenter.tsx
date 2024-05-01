@@ -2,7 +2,6 @@ import { useRecoilState } from "recoil";
 import * as S from "./LayoutHeader.styles";
 import type { ILayoutHeaderProps } from "./LayoutHeader.types";
 import { accessTokenState, isAccessLogin } from "../../store";
-import { useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { FETCH_USER_LOGGED_IN } from "./LayoutHeader.quries";
 import type { IQuery } from "../../../../commons/types/generated/types";
@@ -10,12 +9,8 @@ import type { IQuery } from "../../../../commons/types/generated/types";
 export default function LayoutHeaderUI(props: ILayoutHeaderProps): JSX.Element {
   const { data } =
     useQuery<Pick<IQuery, "fetchUserLoggedIn">>(FETCH_USER_LOGGED_IN);
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [accessToken] = useRecoilState(accessTokenState);
   const [isAccess, setIsAccess] = useRecoilState(isAccessLogin);
-
-  useEffect(() => {
-    setAccessToken(localStorage.getItem("accessToken") ?? "");
-  }, []);
 
   if (accessToken !== "") setIsAccess(true);
   return (
