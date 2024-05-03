@@ -2,7 +2,7 @@ import { Modal } from "antd";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export const withAuth = (Component: any) => (props: any) => {
+export const useAuth = (): void => {
   const router = useRouter();
 
   useEffect(() => {
@@ -11,5 +11,4 @@ export const withAuth = (Component: any) => (props: any) => {
       void router.push("/boards");
     }
   });
-  return <Component {...props} />;
 };

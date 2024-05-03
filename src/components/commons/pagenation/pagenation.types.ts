@@ -6,8 +6,7 @@ import type {
 } from "../../../commons/types/generated/types";
 
 export interface IPagenation01Props {
-  lastPage: number;
-
+  count: number;
   refetch: (
     variables?: Partial<IQueryFetchBoardsArgs> | undefined
   ) => Promise<ApolloQueryResult<Pick<IQuery, "fetchBoards">>>;
@@ -15,8 +14,8 @@ export interface IPagenation01Props {
 
 export interface IPagenationUIProps {
   page: number;
-  activeNum: number;
   lastPage: number;
+  activeNum: number;
   onClickPrev: () => void;
   onClickNext: () => void;
   onClickPageMove: (event: MouseEvent<HTMLParagraphElement>) => void;

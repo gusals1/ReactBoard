@@ -64,6 +64,13 @@ export default function BoardComment(props: IBoardCommentProps): JSX.Element {
         alert("시스템 오류발생");
         return;
       }
+
+      if (!localStorage.getItem("accessToken")) {
+        Modal.error({ content: "로그인 후 이용해주세요" });
+        void router.push(`/${router.asPath}`);
+        return;
+      }
+
       await createBoardComment({
         variables: {
           boardId: router.query.boardId,

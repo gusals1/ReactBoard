@@ -1,10 +1,19 @@
 import { getDate } from "../../../../commons/libraries/util";
 import * as S from "./BoardList.style";
-import type { IBoardListUIProps } from "./BoardList.types";
 import Pagenation01 from "../../../commons/pagenation/pagenation.container";
 import SearchBar from "../../../commons/searchbar/searchBar.container";
 import { v4 as uuidv4 } from "uuid";
-export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
+import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
+import { useQueryFetchBoards } from "../../../commons/hooks/queries/useQueryFetchBoards";
+import { useQueryFetchBoardsCount } from "../../../commons/hooks/queries/useQueryFetchBoardsCount";
+import { useSearch } from "../../../commons/hooks/customs/useSearch";
+export default function BoardList(): JSX.Element {
+  const { onClickMoveToPage } = useMoveToPage();
+  const { keyword, onChangeKeyword } = useSearch();
+  const { data, refetch } = useQueryFetchBoards();
+  const { data: dataBoardCount, refetch: refetchBoardCount } =
+    useQueryFetchBoardsCount();
+
   const secretKey = "!#@!@$";
   return (
     <S.Wrapper>
@@ -36,9 +45,9 @@ export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
       {/* 제목, 날짜, 검색버튼 */}
       <S.SearchArea>
         <SearchBar
-          refetch={props.refetch}
-          refetchBoardCount={props.refetchBoardCount}
-          onAccentKeyword={props.onAccentKeyword}
+          refetch={refetch}
+          refetchBoardCount={refetchBoardCount}
+          onAccentKeyword={onChangeKeyword}
         />
 
         <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
@@ -53,18 +62,18 @@ export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
           <S.PostDate>날짜</S.PostDate>
         </S.TableHeader>
         {/* fetchBoard의 결과를 map으로 뿌려줌 */}
-        {props.data?.fetchBoards.map((el) => (
-          <S.TableRow key={el._id} id={el._id} onClick={props.onClickDetail}>
+        {data?.fetchBoards.map((el) => (
+          <S.TableRow
+            key={el._id}
+            onClick={onClickMoveToPage(`/boards/${el._id}`)}
+          >
             <S.PostId>{el._id.slice(-4).toUpperCase()}</S.PostId>
             <S.PostTitle>
               {el.title
-                .replaceAll(
-                  props.keyWord,
-                  `${secretKey}${props.keyWord}${secretKey}`
-                )
+                .replaceAll(keyword, `${secretKey}${keyword}${secretKey}`)
                 .split(secretKey)
                 .map((el) => (
-                  <S.MatchKeyword key={uuidv4()} isMatch={props.keyWord === el}>
+                  <S.MatchKeyword key={uuidv4()} isMatch={keyword === el}>
                     {el}
                   </S.MatchKeyword>
                 ))}
@@ -76,8 +85,11 @@ export default function BoardListUI(props: IBoardListUIProps): JSX.Element {
       </S.Table>
       {/* 페이지네이션, 게시글 등록 페이지 이동 버튼 */}
       <S.BtmWrapper>
-        <Pagenation01 refetch={props.refetch} lastPage={props.lastPage} />
-        <S.RegisterButton onClick={props.onClickNew}>
+        <Pagenation01
+          refetch={refetch}
+          count={dataBoardCount?.fetchBoardsCount ?? 0}
+        />
+        <S.RegisterButton onClick={onClickMoveToPage("/boards/new")}>
           <S.Icon src="/images/pencil.png" />
           게시글 등록하기
         </S.RegisterButton>
