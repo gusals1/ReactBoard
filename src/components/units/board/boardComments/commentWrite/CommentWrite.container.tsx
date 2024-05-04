@@ -17,7 +17,9 @@ import type {
 import type { IBoardCommentProps } from "./CommentWrite.types";
 import { Modal } from "antd";
 
-export default function BoardComment(props: IBoardCommentProps): JSX.Element {
+export default function BoardCommentWrite(
+  props: IBoardCommentProps
+): JSX.Element {
   // 게시글의 댓글 등록
   const [commentWriter, setCommentWriter] = useState("");
   const [commentPassword, setCommentPassword] = useState("");
