@@ -13,7 +13,7 @@ export const FileHidden = styled.input`
   display: none;
 `;
 
-export const UploadImage = styled.img`
+export const UploadImageBox = styled.img`
   width: 78px;
   height: 78px;
   border: none;

@@ -140,9 +140,9 @@ export const RegistButton = styled.button`
   font-weight: bold;
   margin-bottom: 100px;
   cursor: ${(props: IRegisterButtonProps) =>
-    props.isActive || props.isEdit ? "pointer" : ""};
+    props.isValid || props.isEdit ? "pointer" : ""};
   background-color: ${(props) =>
-    props.isActive || props.isEdit ? "#FFD600" : "#ccc"};
+    props.isValid || props.isEdit ? "#FFD600" : "#ccc"};
 `;
 
 export const Error = styled.div`

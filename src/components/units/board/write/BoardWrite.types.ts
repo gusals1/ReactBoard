@@ -7,4 +7,5 @@ export interface IBoardWriteProps {
 
 export interface IRegisterButtonProps {
   isEdit: boolean;
+  isValid: boolean;
 }

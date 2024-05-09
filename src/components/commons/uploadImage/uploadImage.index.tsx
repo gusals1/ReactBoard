@@ -1,21 +1,18 @@
-import { useMutation } from "@apollo/client";
-import UploadImageUI from "./uploadImage.presenter";
-import { UPLOAD_FILE } from "./uploadImage.queries";
 import { useRef } from "react";
 import type { ChangeEvent } from "react";
-import type { IUploadImageProps } from "./uploadImage.types";
+import { useMutationUploadFile } from "../hooks/mutations/useMutationUploadFile";
+import { FileHidden, UploadButton, UploadImageBox } from "./uploadImage.styles";
 import { checkValidationImage } from "./uploadImage.validation";
 import { Modal } from "antd";
-import type {
-  IMutation,
-  IMutationUploadFileArgs,
-} from "../../../commons/types/generated/types";
+
+interface IUploadImageProps {
+  files: string;
+  index: number;
+  onChangeFiles: (file: string, index: number) => void;
+}
 
 export default function UploadImage(props: IUploadImageProps): JSX.Element {
-  const [uploadFile] = useMutation<
-    Pick<IMutation, "uploadFile">,
-    IMutationUploadFileArgs
-  >(UPLOAD_FILE);
+  const [uploadFile] = useMutationUploadFile();
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -37,18 +34,25 @@ export default function UploadImage(props: IUploadImageProps): JSX.Element {
       });
 
       props.onChangeFiles(result.data?.uploadFile.url ?? "", props.index);
-      console.log(result.data?.uploadFile.url);
     } catch (error) {
       if (error instanceof Error) Modal.error({ content: error.message });
     }
   };
 
   return (
-    <UploadImageUI
-      files={props.files}
-      fileRef={fileRef}
-      onClickUpload={onClickUpload}
-      onChangeUpload={onChangeUpload}
-    />
+    <>
+      {props.files !== "" ? (
+        <UploadImageBox
+          onClick={onClickUpload}
+          src={`https://storage.googleapis.com/${props.files}`}
+        />
+      ) : (
+        <UploadButton onClick={onClickUpload}>
+          <>+</>
+        </UploadButton>
+      )}
+
+      <FileHidden type="file" ref={fileRef} onChange={onChangeUpload} />
+    </>
   );
 }

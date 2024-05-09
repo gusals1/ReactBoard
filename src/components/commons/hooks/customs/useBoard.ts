@@ -35,7 +35,7 @@ export const useBoard = (args: useBoardArgs) => {
   };
 
   const onClickWrite = async (data: Iform): Promise<void> => {
-    if (!data) return;
+    if (!data.boardAddress) return;
     try {
       // createBoard({ variables : api요청에 넣을 값 }) 을 result에 저장
       const result = await createBoard({

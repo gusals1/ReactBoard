@@ -1,7 +1,6 @@
 import { Modal } from "antd";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import * as S from "./BoardWrite.style";
-import UploadImage from "../../../commons/uploadImage/uploadImage.container";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../../../commons/hooks/customs/useBoard";
 import { useCheckedId } from "../../../commons/hooks/customs/useCheckedId";
@@ -10,38 +9,41 @@ import { useToggle } from "../../../commons/hooks/customs/useToggle";
 import { useEffect, useState } from "react";
 import type { IBoardWriteProps } from "./BoardWrite.types";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { boardSchema } from "./BoardValidation";
+import UploadImage from "../../../commons/uploadImage/uploadImage.index";
 
 export interface Iform {
   writer: string;
   password: string;
   title: string;
   contents: string;
-  boardAddress: {
-    zipcode: string;
-    address: string;
-    addressDetail: string;
+  boardAddress?: {
+    zipcode?: string;
+    address?: string;
+    addressDetail?: string;
   };
-  youtubeUrl: string;
-  images: string[];
+  youtubeUrl?: string;
+  images?: string[];
 }
 
 export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   useAuth();
-
   const { id } = useCheckedId("boardId");
   const { onClickWrite, onClickEdit, onChangePassword } = useBoard({
     boardId: id,
   });
-  const [files, setFiles] = useState(["", "", ""]);
 
+  const [files, setFiles] = useState(["", "", ""]);
   // const [isActive] = useToggle();
   const [isOpenModal, modalToggle] = useToggle();
 
   // 게시글 작성 안했을시 오류 보여주는 state
 
-  const [Error] = useState("");
-
-  const { register, handleSubmit, setValue } = useForm<Iform>();
+  const { register, handleSubmit, setValue, formState } = useForm<Iform>({
+    resolver: yupResolver(boardSchema),
+    mode: "onChange",
+  });
 
   useEffect(() => {
     if (props.data) {
@@ -87,7 +89,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
             placeholder="작성자를 입력해주세요"
             {...register("writer")}
           />
-          <S.Error>{Error}</S.Error>
+          <S.Error>{formState.errors.writer?.message}</S.Error>
         </S.HalfSection>
 
         <S.HalfSection>
@@ -98,7 +100,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
             {...register("password")}
             onChange={onChangePassword}
           />
-          <S.Error>{Error}</S.Error>
+          <S.Error>{formState.errors.password?.message}</S.Error>
         </S.HalfSection>
       </S.WriterSection>
 
@@ -109,7 +111,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
           placeholder="제목을 입력해주세요"
           {...register("title")}
         />
-        <S.Error>{Error}</S.Error>
+        <S.Error>{formState.errors.title?.message}</S.Error>
       </S.Section>
 
       <S.Section>
@@ -119,7 +121,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
           placeholder="내용을 입력해주세요"
           {...register("contents")}
         ></S.BoardContents>
-        <S.Error>{Error}</S.Error>
+        <S.Error>{formState.errors.contents?.message}</S.Error>
       </S.Section>
 
       <S.Section>
@@ -189,6 +191,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       <S.RegistButton
         onClick={handleSubmit(props.isEdit ? onClickEdit : onClickWrite)}
         isEdit={props.isEdit}
+        isValid={formState.isValid}
       >
         {props.isEdit ? "수정" : "등록"}하기
       </S.RegistButton>
