@@ -5,7 +5,7 @@ import type {
 } from "../../../../commons/types/generated/types";
 
 // 게시글 전체 목록 조회
-const FETCH_BOARDS = gql`
+export const FETCH_BOARDS = gql`
   query fetchBoards($page: Int, $search: String) {
     fetchBoards(page: $page, search: $search) {
       _id

@@ -34,12 +34,22 @@ export default function UploadImage(props: IUploadImageProps): JSX.Element {
       const result = await uploadFile({
         variables: { file },
       });
+
       props.onChangeFiles(result.data?.uploadFile.url ?? "", props.index);
     } catch (error) {
       if (error instanceof Error) Modal.error({ content: error.message });
     }
   };
 
+  // const onChangeFiles = (file: string, index: number): void => {
+  //   // file값은 url값 index는 해당하는 number값.
+  //   const newFiles = [...files];
+  //   // newFiles = ["","",""]
+  //   newFiles[index] = file;
+  //   // newFiles = ["url","",""]
+  //   setFiles(newFiles);
+  //   // files === newFiles
+  // };
   return (
     <UploadImageUI
       files={props.files}

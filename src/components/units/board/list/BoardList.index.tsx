@@ -1,18 +1,25 @@
 import { getDate } from "../../../../commons/libraries/util";
 import * as S from "./BoardList.style";
-import Pagenation01 from "../../../commons/pagenation/pagenation.container";
-import SearchBar from "../../../commons/searchbar/searchBar.container";
 import { v4 as uuidv4 } from "uuid";
+
 import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
 import { useQueryFetchBoards } from "../../../commons/hooks/queries/useQueryFetchBoards";
 import { useQueryFetchBoardsCount } from "../../../commons/hooks/queries/useQueryFetchBoardsCount";
 import { useSearch } from "../../../commons/hooks/customs/useSearch";
+import Pagenation01 from "../../../commons/pagenation/pagenation.index";
+import SearchBar from "../../../commons/searchbar/searchBar.index";
+
 export default function BoardList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
-  const { keyword, onChangeKeyword } = useSearch();
   const { data, refetch } = useQueryFetchBoards();
+
   const { data: dataBoardCount, refetch: refetchBoardCount } =
     useQueryFetchBoardsCount();
+
+  const { keyword, onChangeSearchBar } = useSearch({
+    refetch,
+    refetchBoardCount,
+  });
 
   const secretKey = "!#@!@$";
   return (
@@ -44,11 +51,7 @@ export default function BoardList(): JSX.Element {
       </S.TopBox>
       {/* 제목, 날짜, 검색버튼 */}
       <S.SearchArea>
-        <SearchBar
-          refetch={refetch}
-          refetchBoardCount={refetchBoardCount}
-          onAccentKeyword={onChangeKeyword}
-        />
+        <SearchBar onChangeSearchBar={onChangeSearchBar} />
 
         <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
         <S.SearchButton>검색하기</S.SearchButton>

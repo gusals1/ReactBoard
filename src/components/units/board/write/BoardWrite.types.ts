@@ -3,11 +3,6 @@ import type { IQuery } from "../../../../commons/types/generated/types";
 import type { Address } from "react-daum-postcode";
 
 export interface IBoardWriteProps {
-  isEdit: boolean;
-  data?: Pick<IQuery, "fetchBoard">;
-}
-
-export interface IBoardWriteUIProps {
   writerError: string;
   passwordError: string;
   titleError: string;

@@ -12,10 +12,10 @@ export const LIKE_BOARD = gql`
 `;
 export const useMutationLikeBoard = () => {
   // 게시글 좋아요 mutation
-  const data = useMutation<
+  const mutation = useMutation<
     Pick<IMutation, "likeBoard">,
     IMutationLikeBoardArgs
   >(LIKE_BOARD);
 
-  return data;
+  return mutation;
 };

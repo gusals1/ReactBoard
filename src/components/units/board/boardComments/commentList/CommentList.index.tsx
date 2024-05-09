@@ -1,22 +1,15 @@
-import { useRouter } from "next/router";
-import { useQuery } from "@apollo/client";
-import { FETCH_BOARD_COMMENTS } from "./CommentList.queries";
-import type {
-  IQuery,
-  IQueryFetchBoardCommentsArgs,
-} from "../../../../../commons/types/generated/types";
-import CommentListUI from "./CommentList.presenter";
+import InfiniteScroll from "react-infinite-scroller";
+import CommentListItem from "./CommentList.Item";
+import { useCheckedId } from "../../../../commons/hooks/customs/useCheckedId";
+import { useQueryFetchBoardComment } from "../../../../commons/hooks/queries/useQueryFetchBoardComment";
+import CommentWrite from "../commentWrite/CommentWrite.index";
 
-export default function BoardCommentList(): JSX.Element {
-  // 댓글 목록 페이지
-  const router = useRouter();
-  if (typeof router.query.boardId !== "string") return <></>;
+export default function CommentList(): JSX.Element {
+  // 무한스크롤 적용
 
-  // 댓글 조회 query, fetchMore로 추가로 fetch 할 수 있게함.
-  const { data, fetchMore } = useQuery<
-    Pick<IQuery, "fetchBoardComments">,
-    IQueryFetchBoardCommentsArgs
-  >(FETCH_BOARD_COMMENTS, { variables: { boardId: router.query.boardId } });
+  const { id } = useCheckedId("boardId");
+
+  const { data, fetchMore } = useQueryFetchBoardComment({ boardId: id });
 
   const FetchMoreComment = (): void => {
     // 추가 패치할때 현재 페이지의 +1을 page에 넣음
@@ -40,5 +33,14 @@ export default function BoardCommentList(): JSX.Element {
     });
   };
 
-  return <CommentListUI data={data} FetchMoreComment={FetchMoreComment} />;
+  return (
+    <>
+      <CommentWrite />
+      <InfiniteScroll pageStart={0} loadMore={FetchMoreComment} hasMore={true}>
+        {data?.fetchBoardComments.map((el) => (
+          <CommentListItem el={el} key={el._id} />
+        )) ?? <></>}
+      </InfiniteScroll>
+    </>
+  );
 }

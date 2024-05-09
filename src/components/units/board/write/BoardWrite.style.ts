@@ -6,10 +6,6 @@ export const Wrapper = styled.div`
   margin: 100px auto;
   overflow: hidden;
   box-shadow: 0px 0px 10px gray;
-`;
-
-export const Main = styled.main`
-  width: 100%;
   padding: 80px 102px;
 `;
 
@@ -20,7 +16,7 @@ export const BoardTitle = styled.h2`
   margin-bottom: 60px;
 `;
 
-export const FormSection = styled.div`
+export const Section = styled.div`
   width: 100%;
   margin-bottom: 40px;
 `;
@@ -32,9 +28,8 @@ export const WriterSection = styled.div`
   margin-bottom: 40px;
 `;
 
-export const FormSectionHalf = styled.div`
+export const HalfSection = styled.div`
   width: 47%;
-  display: inline-block;
 `;
 
 export const BoardLabel = styled.label`

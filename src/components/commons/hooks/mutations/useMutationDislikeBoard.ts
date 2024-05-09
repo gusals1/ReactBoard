@@ -13,10 +13,10 @@ export const DISLIKE_BOARD = gql`
 
 export const useMutationDislikeBoard = () => {
   // 게시글 싫어요 mutation
-  const data = useMutation<
+  const mutation = useMutation<
     Pick<IMutation, "dislikeBoard">,
     IMutationDislikeBoardArgs
   >(DISLIKE_BOARD);
 
-  return data;
+  return mutation;
 };

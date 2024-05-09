@@ -13,10 +13,10 @@ export const DELETE_BOARD = gql`
 
 export const useMutationDeleteBoard = () => {
   // 삭제 mutation
-  const data = useMutation<
+  const mutation = useMutation<
     Pick<IMutation, "deleteBoard">,
     IMutationDeleteBoardArgs
   >(DELETE_BOARD);
 
-  return data;
+  return mutation;
 };

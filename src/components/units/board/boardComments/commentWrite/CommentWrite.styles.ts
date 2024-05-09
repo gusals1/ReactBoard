@@ -25,7 +25,7 @@ export const CommentTitle = styled.h3`
   margin-left: 12px;
 `;
 
-export const WriterInfo = styled.div`
+export const WriterInfo = styled.form`
   width: 100%;
   display: flex;
   flex-direction: row;
