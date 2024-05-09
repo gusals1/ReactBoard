@@ -16,6 +16,7 @@ export default function UploadImage(props: IUploadImageProps): JSX.Element {
     Pick<IMutation, "uploadFile">,
     IMutationUploadFileArgs
   >(UPLOAD_FILE);
+
   const fileRef = useRef<HTMLInputElement>(null);
 
   const onClickUpload = (): void => {
@@ -36,20 +37,12 @@ export default function UploadImage(props: IUploadImageProps): JSX.Element {
       });
 
       props.onChangeFiles(result.data?.uploadFile.url ?? "", props.index);
+      console.log(result.data?.uploadFile.url);
     } catch (error) {
       if (error instanceof Error) Modal.error({ content: error.message });
     }
   };
 
-  // const onChangeFiles = (file: string, index: number): void => {
-  //   // file값은 url값 index는 해당하는 number값.
-  //   const newFiles = [...files];
-  //   // newFiles = ["","",""]
-  //   newFiles[index] = file;
-  //   // newFiles = ["url","",""]
-  //   setFiles(newFiles);
-  //   // files === newFiles
-  // };
   return (
     <UploadImageUI
       files={props.files}

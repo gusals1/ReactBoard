@@ -19,6 +19,7 @@ interface IUpdateBoardInput {
     address?: string;
     addressDetail?: string;
   };
+  images?: string[];
 }
 
 export const useBoard = (args: useBoardArgs) => {
@@ -99,7 +100,7 @@ export const useBoard = (args: useBoardArgs) => {
       if (data.addressDetail)
         updateBoardInput.boardAddress.addressDetail = data.addressDetail;
     }
-
+    if (data.images) updateBoardInput.images = data.images;
     try {
       const updateResult = await updateBoard({
         variables: {

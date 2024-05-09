@@ -5,6 +5,7 @@ import { accessTokenState, isAccessLogin } from "../../store";
 import { useQuery } from "@apollo/client";
 import { FETCH_USER_LOGGED_IN } from "./LayoutHeader.quries";
 import type { IQuery } from "../../../../commons/types/generated/types";
+import { useEffect } from "react";
 
 export default function LayoutHeaderUI(props: ILayoutHeaderProps): JSX.Element {
   const { data } =
@@ -12,7 +13,10 @@ export default function LayoutHeaderUI(props: ILayoutHeaderProps): JSX.Element {
   const [accessToken] = useRecoilState(accessTokenState);
   const [isAccess, setIsAccess] = useRecoilState(isAccessLogin);
 
-  if (accessToken !== "") setIsAccess(true);
+  useEffect(() => {
+    if (accessToken !== "") setIsAccess(true);
+  });
+
   return (
     <S.HeaderWrapper>
       <S.HeaderInner>

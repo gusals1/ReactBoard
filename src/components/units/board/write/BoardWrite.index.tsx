@@ -7,7 +7,7 @@ import { useBoard } from "../../../commons/hooks/customs/useBoard";
 import { useCheckedId } from "../../../commons/hooks/customs/useCheckedId";
 import { useForm } from "react-hook-form";
 import { useToggle } from "../../../commons/hooks/customs/useToggle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { IBoardWriteProps } from "./BoardWrite.types";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 
@@ -27,41 +27,51 @@ export interface Iform {
 
 export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   useAuth();
+
   const { id } = useCheckedId("boardId");
   const { onClickWrite, onClickEdit, onChangePassword } = useBoard({
     boardId: id,
   });
   const [files, setFiles] = useState(["", "", ""]);
 
-  const [isActive] = useToggle();
+  // const [isActive] = useToggle();
   const [isOpenModal, modalToggle] = useToggle();
 
   // 게시글 작성 안했을시 오류 보여주는 state
+
   const [Error] = useState("");
 
-  const { register, handleSubmit } = useForm<Iform>({
-    defaultValues: {
-      writer: "",
-      password: "",
-      title: "",
-      contents: "",
-      boardAddress: {
-        zipcode: "",
-        address: "",
-        addressDetail: "",
-      },
-      images: [...files],
-    },
-  });
+  const { register, handleSubmit, setValue } = useForm<Iform>();
+
+  useEffect(() => {
+    if (props.data) {
+      setValue("writer", props.data.fetchBoard.writer ?? "");
+      setValue("title", props.data.fetchBoard.title ?? "");
+      setValue("contents", props.data.fetchBoard.contents ?? "");
+      setValue(
+        "boardAddress.zipcode",
+        props.data.fetchBoard.boardAddress?.zipcode ?? ""
+      );
+      setValue(
+        "boardAddress.address",
+        props.data.fetchBoard.boardAddress?.address ?? ""
+      );
+      setValue(
+        "boardAddress.addressDetail",
+        props.data.fetchBoard.boardAddress?.addressDetail ?? ""
+      );
+      setValue("images", props.data.fetchBoard.images ?? ["", "", ""]);
+    }
+    const images = props.data?.fetchBoard.images;
+    if (images !== undefined && images !== null) setFiles([...images]);
+  }, [props.data]);
 
   const onChangeFiles = (file: string, index: number): void => {
     // file값은 url값 index는 해당하는 number값.
     const newFiles = [...files];
-    // newFiles = ["","",""]
     newFiles[index] = file;
-    // newFiles = ["url","",""]
     setFiles(newFiles);
-    // files === newFiles
+    setValue("images", newFiles);
   };
 
   return (
@@ -73,6 +83,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
           <S.BoardLabel>작성자</S.BoardLabel>
           <S.BoardInput
             type="text"
+            defaultValue={props.data?.fetchBoard.writer ?? ""}
             placeholder="작성자를 입력해주세요"
             {...register("writer")}
           />
@@ -114,15 +125,22 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       <S.Section>
         <S.BoardLabel>주소</S.BoardLabel>
         <S.ZipCodeWrapper>
-          <S.ZipCodeInput placeholder="07725" readOnly />
+          <S.ZipCodeInput
+            placeholder="07725"
+            readOnly
+            {...register("boardAddress.zipcode")}
+          />
           <S.ZipCodeButton onClick={modalToggle}>
             우편번호 검색
             {/* 모달창의 state를 받아와서 true라면 모달창을 열어준다. */}
             {isOpenModal && (
               <Modal open={isOpenModal}>
                 <DaumPostcodeEmbed
-                  onComplete={modalToggle}
-                  {...register("boardAddress.zipcode")}
+                  onComplete={(data) => {
+                    setValue("boardAddress.zipcode", data.zonecode);
+                    setValue("boardAddress.address", data.address);
+                    modalToggle();
+                  }}
                 />
               </Modal>
             )}
@@ -170,7 +188,6 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
       </S.Section>
       <S.RegistButton
         onClick={handleSubmit(props.isEdit ? onClickEdit : onClickWrite)}
-        isActive={props.isEdit ? true : isActive}
         isEdit={props.isEdit}
       >
         {props.isEdit ? "수정" : "등록"}하기
