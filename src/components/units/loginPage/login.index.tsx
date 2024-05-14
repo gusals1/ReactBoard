@@ -31,7 +31,7 @@ export default function LoginPageUI(): JSX.Element {
         </S.LoginButton>
         <S.Contour></S.Contour>
         <S.Account>
-          계정이 없으신가요?{" "}
+          계정이 없으신가요? &nbsp;
           <S.SignUp onClick={onClickMoveToPage("/signup")}>가입하기</S.SignUp>
         </S.Account>
       </S.LoginCard>

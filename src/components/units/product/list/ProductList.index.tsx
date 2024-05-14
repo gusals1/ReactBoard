@@ -1,5 +1,5 @@
 import { getDate } from "../../../../commons/libraries/util";
-import * as S from "./BoardList.style";
+import * as S from "./ProductList.style";
 import { v4 as uuidv4 } from "uuid";
 
 import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
@@ -9,7 +9,7 @@ import { useSearch } from "../../../commons/hooks/customs/useSearch";
 import Pagenation01 from "../../../commons/pagenation/pagenation.index";
 import SearchBar from "../../../commons/searchbar/searchBar.index";
 
-export default function BoardList(): JSX.Element {
+export default function ProductList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
   const { data, refetch } = useQueryFetchBoards();
 
@@ -24,7 +24,7 @@ export default function BoardList(): JSX.Element {
   const secretKey = "!#@!@$";
   return (
     <S.Wrapper>
-      <S.Title>베스트 게시글</S.Title>
+      <S.Title>베스트 상품</S.Title>
       <S.TopBox>
         {/* 베스트 게시글 영역 (같은 디자인이라 map으로 뿌려줌)
             나중에 배열 데이터 or DB데이터를 이용해 뿌려주면 될듯
@@ -50,12 +50,17 @@ export default function BoardList(): JSX.Element {
         ))}
       </S.TopBox>
       {/* 제목, 날짜, 검색버튼 */}
-      <S.SearchArea>
-        <SearchBar onChangeSearchBar={onChangeSearchBar} text="제목" />
-
-        <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
-        <S.SearchButton>검색하기</S.SearchButton>
-      </S.SearchArea>
+      <S.TableTop>
+        <S.SalesWrapper>
+          <S.Sale>판매중 상품</S.Sale>
+          <S.Sale>판매된 상품</S.Sale>
+        </S.SalesWrapper>
+        <S.SearchWrap>
+          <SearchBar onChangeSearchBar={onChangeSearchBar} text="상품" />
+          <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
+          <S.SearchButton>검색</S.SearchButton>
+        </S.SearchWrap>
+      </S.TableTop>
       {/* 게시글 목록 */}
       <S.Table>
         <S.TableHeader>
@@ -92,9 +97,8 @@ export default function BoardList(): JSX.Element {
           refetch={refetch}
           count={dataBoardCount?.fetchBoardsCount ?? 0}
         />
-        <S.RegisterButton onClick={onClickMoveToPage("/boards/new")}>
-          <S.Icon src="/images/pencil.png" />
-          게시글 등록하기
+        <S.RegisterButton onClick={onClickMoveToPage("/shop/new")}>
+          상품 등록하기
         </S.RegisterButton>
       </S.BtmWrapper>
     </S.Wrapper>

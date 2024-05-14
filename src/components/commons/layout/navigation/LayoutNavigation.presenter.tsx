@@ -7,7 +7,7 @@ export default function LayoutNavigationUI(
   const Nav = [
     { title: "firebase 게시판", page: "/firebaseBoards" },
     { title: "자유게시판", page: "/boards" },
-    { title: "중고마켓", page: "/" },
+    { title: "중고마켓", page: "/shop" },
     { title: "마이페이지", page: "/" },
   ];
 
