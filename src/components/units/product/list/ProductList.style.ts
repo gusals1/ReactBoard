@@ -134,22 +134,17 @@ export const Table = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   text-align: center;
   margin-top: 40px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 `;
-export const TableHeader = styled.h3`
-  display: flex;
-  width: 100%;
-  height: 52px;
-  line-height: 52px;
-  font-size: 18px;
-`;
+
 export const TableRow = styled.div`
   display: flex;
   align-items: center;
-  height: 52px;
+  justify-content: space-between;
   border-top: 1px solid #ccc;
   font-size: 16px;
   :hover {
@@ -159,16 +154,17 @@ export const TableRow = styled.div`
 `;
 
 export const PostId = styled.div`
-  width: 8%;
+  width: 14%;
 `;
 export const PostTitle = styled.div`
-  width: 62%;
+  background-color: #ddd;
+  flex-grow: 1;
 `;
 export const PostWriter = styled.div`
-  width: 15%;
+  /* width: 15%; */
 `;
 export const PostDate = styled.div`
-  width: 15%;
+  /* width: 10%; */
 `;
 export const BtmWrapper = styled.div`
   margin: 40px 0 80px;

@@ -15,6 +15,9 @@ export interface IUseditemForm {
   tags: string[];
   images?: string[];
 }
+declare const window: typeof globalThis & {
+  kakao: any;
+};
 
 export default function ProductWrite(props: IProductWriteProps): JSX.Element {
   useAuth();
@@ -47,6 +50,32 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
     }
   }, [props.data]);
 
+  useEffect(() => {
+    const script = document.createElement("script");
+
+    script.src =
+      "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=0f1c57c699441fa8d38826a9465589fd";
+    // head 태그안에 추가
+    document.head.appendChild(script);
+    script.onload = () => {
+      window.kakao.maps.load(function () {
+        const container = document.getElementById("map"); // 지도를 담을 영역의 DOM 레퍼런스
+        const options = {
+          // 지도를 생성할 때 필요한 기본 옵션
+          center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표.
+          level: 3, // 지도의 레벨(확대, 축소 정도)
+        };
+        const map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
+        // console.log(map);
+
+        const marker = new window.kakao.maps.Marker({
+          position: map.getCenter(),
+        });
+        marker.setMap(map);
+      });
+    };
+  }, []);
+
   return (
     <S.Wrapper>
       <S.BoardTitle>상품{props.isEdit ? "수정" : "등록"}</S.BoardTitle>
@@ -56,7 +85,7 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
         <S.BoardLabel>상품명</S.BoardLabel>
         <S.BoardInput
           type="text"
-          placeholder="제목을 입력해주세요"
+          placeholder="상품 이름을 입력해주세요"
           {...register("name")}
         />
       </S.Section>
@@ -65,7 +94,7 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
         <S.BoardLabel>한줄요약</S.BoardLabel>
         <S.BoardInput
           type="text"
-          placeholder="제목을 입력해주세요"
+          placeholder="상품에 대한 간단한 설명을 입력해주세요"
           {...register("remarks")}
         />
       </S.Section>
@@ -96,6 +125,8 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
           {...register("tags")}
         />
       </S.Section>
+      {/* 지도 들어갈 부분 */}
+      <div id="map" style={{ width: 500, height: 400 }}></div>
       <S.Section>
         <S.BoardLabel>사진 첨부</S.BoardLabel>
         {/* 이미지 업로드 컴포넌트 분리 */}

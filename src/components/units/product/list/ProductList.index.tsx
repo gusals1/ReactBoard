@@ -1,25 +1,41 @@
-import { getDate } from "../../../../commons/libraries/util";
 import * as S from "./ProductList.style";
 import { v4 as uuidv4 } from "uuid";
-
 import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
-import { useQueryFetchBoards } from "../../../commons/hooks/queries/useQueryFetchBoards";
-import { useQueryFetchBoardsCount } from "../../../commons/hooks/queries/useQueryFetchBoardsCount";
-import { useSearch } from "../../../commons/hooks/customs/useSearch";
-import Pagenation01 from "../../../commons/pagenation/pagenation.index";
+// import { useSearch } from "../../../commons/hooks/customs/useSearch";
 import SearchBar from "../../../commons/searchbar/searchBar.index";
+import { gql, useQuery } from "@apollo/client";
+import type {
+  IQuery,
+  IQueryFetchUseditemsArgs,
+} from "../../../../commons/types/generated/types";
+
+export const FETCH_USEDITEMS = gql`
+  query {
+    fetchUseditems(page: 1) {
+      _id
+      name
+      remarks
+      contents
+      price
+      tags
+      images
+      pickedCount
+      createdAt
+    }
+  }
+`;
 
 export default function ProductList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
-  const { data, refetch } = useQueryFetchBoards();
 
-  const { data: dataBoardCount, refetch: refetchBoardCount } =
-    useQueryFetchBoardsCount();
+  const { data } = useQuery<
+    Pick<IQuery, "fetchUseditems">,
+    IQueryFetchUseditemsArgs
+  >(FETCH_USEDITEMS);
 
-  const { keyword, onChangeSearchBar } = useSearch({
-    refetch,
-    refetchBoardCount,
-  });
+  // const { keyword, onChangeSearchBar } = useSearch({
+  //   refetch,
+  // });
 
   const secretKey = "!#@!@$";
   return (
@@ -56,47 +72,47 @@ export default function ProductList(): JSX.Element {
           <S.Sale>판매된 상품</S.Sale>
         </S.SalesWrapper>
         <S.SearchWrap>
-          <SearchBar onChangeSearchBar={onChangeSearchBar} text="상품" />
+          <SearchBar onChangeSearchBar={() => {}} text="상품" />
           <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
           <S.SearchButton>검색</S.SearchButton>
         </S.SearchWrap>
       </S.TableTop>
       {/* 게시글 목록 */}
       <S.Table>
-        <S.TableHeader>
-          <S.PostId>번호</S.PostId>
-          <S.PostTitle>제목</S.PostTitle>
-          <S.PostWriter>작성자</S.PostWriter>
-          <S.PostDate>날짜</S.PostDate>
-        </S.TableHeader>
         {/* fetchBoard의 결과를 map으로 뿌려줌 */}
-        {data?.fetchBoards.map((el) => (
+        {data?.fetchUseditems.map((el) => (
           <S.TableRow
             key={el._id}
-            onClick={onClickMoveToPage(`/boards/${el._id}`)}
+            onClick={onClickMoveToPage(`/shop/${el._id}`)}
           >
-            <S.PostId>{el._id.slice(-4).toUpperCase()}</S.PostId>
+            <S.PostId>
+              {/* {el._id.slice(-4).toUpperCase()} */}
+              <img
+                src={
+                  el.images
+                    ? `https://storage.googleapis.com/${el.images[0]}`
+                    : ""
+                }
+                alt="goods image"
+                style={{ minHeight: "160px" }}
+              />
+            </S.PostId>
             <S.PostTitle>
-              {el.title
-                .replaceAll(keyword, `${secretKey}${keyword}${secretKey}`)
+              {el.name
+                .replaceAll(el._id, `${secretKey}${el._id}${secretKey}`)
                 .split(secretKey)
-                .map((el) => (
-                  <S.MatchKeyword key={uuidv4()} isMatch={keyword === el}>
-                    {el}
+                .map((li) => (
+                  <S.MatchKeyword key={uuidv4()} isMatch={el._id === li}>
+                    {li}
                   </S.MatchKeyword>
                 ))}
             </S.PostTitle>
-            <S.PostWriter>{el.writer}</S.PostWriter>
-            <S.PostDate>{getDate(el.createdAt)}</S.PostDate>
+
+            <S.PostDate>{el.price}원</S.PostDate>
           </S.TableRow>
         ))}
       </S.Table>
-      {/* 페이지네이션, 게시글 등록 페이지 이동 버튼 */}
       <S.BtmWrapper>
-        <Pagenation01
-          refetch={refetch}
-          count={dataBoardCount?.fetchBoardsCount ?? 0}
-        />
         <S.RegisterButton onClick={onClickMoveToPage("/shop/new")}>
           상품 등록하기
         </S.RegisterButton>
