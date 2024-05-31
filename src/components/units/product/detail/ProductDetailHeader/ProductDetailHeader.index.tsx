@@ -3,7 +3,9 @@ import * as S from "./ProductDetailHeader.styles";
 import { getDate } from "../../../../../commons/libraries/util";
 import type { IproductDetailHeaderProps } from "./ProductDetailHeader.types";
 
-export default function ProductDetailHeader(props: IproductDetailHeaderProps) {
+export default function ProductDetailHeader(
+  props: IproductDetailHeaderProps
+): JSX.Element {
   return (
     <>
       {/* BoardDetail Header------------------------------------------------ */}
@@ -13,7 +15,7 @@ export default function ProductDetailHeader(props: IproductDetailHeaderProps) {
           <S.Info>
             <S.Writer>{props.data?.fetchUseditem?.name}</S.Writer>
             <S.CreatedAt>
-              {getDate(props.data?.fetchUseditem?.createdAt)}
+              {getDate(props.data?.fetchUseditem.createdAt)}
             </S.CreatedAt>
           </S.Info>
         </S.ProfileWrapper>
