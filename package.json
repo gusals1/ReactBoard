@@ -45,7 +45,6 @@
     "@types/react": "17.0.2",
     "@types/react-infinite-scroller": "^1.2.5",
     "@types/react-slick": "^0.23.13",
-    "typescript": "*",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.6.0",
@@ -54,7 +53,9 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.32.1",
-    "prettier": "2.8.3"
+    "prettier": "2.8.3",
+    "typescript": "*",
+    "husky": "^8.0.3"
   },
   "resolutions": {
     "@types/react": "17.0.2"
