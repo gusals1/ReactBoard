@@ -17,5 +17,6 @@ module.exports = {
     "@typescript-eslint/strict-boolean-expressions": "off",
     "react/display-name": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
   },
 };

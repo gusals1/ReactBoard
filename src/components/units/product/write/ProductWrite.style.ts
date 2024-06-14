@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
   padding: 80px 102px;
 `;
 
-export const BoardTitle = styled.h2`
+export const ProdTitle = styled.h2`
   font-size: 36px;
   font-weight: 700;
   text-align: center;
@@ -17,94 +17,43 @@ export const BoardTitle = styled.h2`
 
 export const Section = styled.div`
   width: 100%;
-  margin-bottom: 40px;
 `;
 
-export const BoardLabel = styled.label`
+export const ProdLabel = styled.label`
   display: block;
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 20px;
 `;
+
+export const ProdInput = styled.input`
+  width: 100%;
+  height: 52px;
+  padding-left: 16px;
+  margin-bottom: 40px;
+  outline: none;
+  border: 1px solid #bdbdbd;
+  ::placeholder {
+    font-weight: 400;
+    font-size: 16px;
+    color: #bdbdbd;
+  }
+  :focus {
+    border: 2px solid lightblue;
+  }
+`;
+export const ProdContents = styled.div`
+  width: 100%;
+  min-height: 350px;
+  margin-bottom: 40px;
+`;
+
 export const ImageWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   gap: 24px;
-`;
-
-export const BoardInput = styled.input`
-  width: 100%;
-  height: 52px;
-  padding-left: 16px;
-  outline: none;
-  border: 1px solid #bdbdbd;
-  ::placeholder {
-    font-weight: 400;
-    font-size: 16px;
-    color: #bdbdbd;
-  }
-  :focus {
-    border: 2px solid lightblue;
-  }
-`;
-export const BoardContents = styled.textarea`
-  width: 100%;
-  height: 480px;
-  resize: none;
-  padding: 16px;
-  outline: none;
-  border: 1px solid #bdbdbd;
-  ::placeholder {
-    font-weight: 400;
-    font-size: 16px;
-    color: #bdbdbd;
-  }
-  :focus {
-    border: 2px solid lightblue;
-  }
-`;
-
-export const ZipCodeWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-export const ZipCodeInput = styled.input`
-  text-align: center;
-  display: inline-block;
-  width: 77px;
-  height: 52px;
-  border: 1px solid #bdbdbd;
-  outline: none;
-  cursor: auto;
-  margin-right: 16px;
-  ::placeholder {
-    text-align: center;
-  }
-`;
-export const ZipCodeButton = styled.button`
-  width: 124px;
-  height: 52px;
-  padding: 16px;
-  background: #000;
-  color: #fff;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-`;
-export const Address = styled.input`
-  width: 100%;
-  margin-top: 14px;
-  display: block;
-  border: 1px solid #bdbdbd;
-  height: 52px;
-  text-indent: 16px;
-  outline: none;
-  cursor: auto;
-  ::placeholder {
-    font-size: 16px;
-    color: #bdbdbd;
-  }
+  margin-bottom: 40px;
 `;
 
 export const RadioButton = styled.input`
@@ -123,15 +72,13 @@ export const RegistButton = styled.button`
   width: 180px;
   height: 52px;
   border: none;
-  margin: 0 auto;
+  margin: 80px auto 0;
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 100px;
   cursor: pointer;
 `;
 
-export const Error = styled.div`
-  padding-top: 10px;
-  font-size: 14px;
-  color: red;
-`;
+export const webEditor = {
+  maxwidth: "100%",
+  height: "300px",
+};

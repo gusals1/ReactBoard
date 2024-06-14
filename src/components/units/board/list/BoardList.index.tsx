@@ -11,6 +11,7 @@ import SearchBar from "../../../commons/searchbar/searchBar.index";
 
 export default function BoardList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
+
   const { data, refetch } = useQueryFetchBoards();
 
   const { data: dataBoardCount, refetch: refetchBoardCount } =
@@ -22,6 +23,7 @@ export default function BoardList(): JSX.Element {
   });
 
   const secretKey = "!#@!@$";
+
   return (
     <S.Wrapper>
       <S.Title>베스트 게시글</S.Title>

@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import type { IProductWriteProps } from "./ProductWrite.types";
 import { useProduct } from "../../../commons/hooks/customs/useProduct";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 
 export interface IUseditemForm {
   name: string;
@@ -19,10 +21,13 @@ declare const window: typeof globalThis & {
   kakao: any;
 };
 
+const ReactQuill = dynamic(async () => await import("react-quill"), {
+  ssr: false,
+});
+
 export default function ProductWrite(props: IProductWriteProps): JSX.Element {
   useAuth();
-  const { onClickUseditem, onClickUpdateItem } = useProduct();
-
+  const { onClickUseditem, onClickUpdateItem } = useProduct({});
   const [files, setFiles] = useState(["", "", ""]);
 
   const onChangeFiles = (file: string, index: number): void => {
@@ -34,7 +39,7 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
   };
   // ------------------------------------------------------------------------------
 
-  const { register, handleSubmit, setValue } = useForm<IUseditemForm>({
+  const { register, handleSubmit, setValue, trigger } = useForm<IUseditemForm>({
     mode: "onSubmit",
   });
 
@@ -76,59 +81,67 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
     };
   }, []);
 
+  const onChangeContents = (value: string) => {
+    // console.log(value);
+    setValue("contents", value === "<p><br></p>" ? "" : value);
+    void trigger("contents");
+  };
+
   return (
     <S.Wrapper>
-      <S.BoardTitle>상품{props.isEdit ? "수정" : "등록"}</S.BoardTitle>
+      <S.ProdTitle>상품{props.isEdit ? "수정" : "등록"}</S.ProdTitle>
 
       <S.Section>
         {/* name */}
-        <S.BoardLabel>상품명</S.BoardLabel>
-        <S.BoardInput
+        <S.ProdLabel>상품명</S.ProdLabel>
+        <S.ProdInput
           type="text"
           placeholder="상품 이름을 입력해주세요"
           {...register("name")}
         />
-      </S.Section>
-      <S.Section>
+
         {/* remark */}
-        <S.BoardLabel>한줄요약</S.BoardLabel>
-        <S.BoardInput
+        <S.ProdLabel>한줄요약</S.ProdLabel>
+        <S.ProdInput
           type="text"
           placeholder="상품에 대한 간단한 설명을 입력해주세요"
           {...register("remarks")}
         />
-      </S.Section>
 
-      <S.Section>
         {/* contents */}
-        <S.BoardLabel>상품설명</S.BoardLabel>
-        <S.BoardContents
-          placeholder="내용을 입력해주세요"
-          {...register("contents")}
-        ></S.BoardContents>
-      </S.Section>
-      <S.Section>
+        <S.ProdLabel>상품설명</S.ProdLabel>
+        <S.ProdContents>
+          <ReactQuill
+            placeholder="내용을 입력해주세요"
+            style={S.webEditor}
+            onChange={onChangeContents}
+          />
+        </S.ProdContents>
+
         {/* price */}
-        <S.BoardLabel>가격</S.BoardLabel>
-        <S.BoardInput
+        <S.ProdLabel>가격</S.ProdLabel>
+        <S.ProdInput
           type="number"
           placeholder="가격을 입력해주세요"
           {...register("price")}
         />
-      </S.Section>
-      <S.Section>
+
         {/* tag */}
-        <S.BoardLabel>태그입력</S.BoardLabel>
-        <S.BoardInput
+        <S.ProdLabel>태그입력</S.ProdLabel>
+        <S.ProdInput
           type="text"
           placeholder="#태그 #태그 #태그..."
           {...register("tags")}
         />
-      </S.Section>
-      {/* 지도 들어갈 부분 */}
-      <div id="map" style={{ width: 500, height: 400 }}></div>
-      <S.Section>
-        <S.BoardLabel>사진 첨부</S.BoardLabel>
+
+        {/* 지도 들어갈 부분 */}
+        <S.ProdLabel>주소설정</S.ProdLabel>
+        <div
+          id="map"
+          style={{ width: 500, height: 400, marginBottom: 40 }}
+        ></div>
+
+        <S.ProdLabel>사진 첨부</S.ProdLabel>
         {/* 이미지 업로드 컴포넌트 분리 */}
         <S.ImageWrapper>
           {files.map((el, index) => (
@@ -140,24 +153,23 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
             />
           ))}
         </S.ImageWrapper>
-      </S.Section>
 
-      <S.Section>
-        <S.BoardLabel>메인 설정</S.BoardLabel>
+        <S.ProdLabel>메인 설정</S.ProdLabel>
 
         <S.RadioButton type="radio" id="youtube" name="radio-button" />
-        <S.RadioLabel htmlFor="youtube">유튜브</S.RadioLabel>
+        <S.RadioLabel htmlFor="youtube">사진1</S.RadioLabel>
 
         <S.RadioButton type="radio" id="image" name="radio-button" />
-        <S.RadioLabel htmlFor="image">사진</S.RadioLabel>
+        <S.RadioLabel htmlFor="image">사진2</S.RadioLabel>
+
+        <S.RegistButton
+          onClick={handleSubmit(
+            props.isEdit ? onClickUpdateItem : onClickUseditem
+          )}
+        >
+          {props.isEdit ? "수정" : "등록"}하기
+        </S.RegistButton>
       </S.Section>
-      <S.RegistButton
-        onClick={handleSubmit(
-          props.isEdit ? onClickUpdateItem : onClickUseditem
-        )}
-      >
-        {props.isEdit ? "수정" : "등록"}하기
-      </S.RegistButton>
     </S.Wrapper>
   );
 }

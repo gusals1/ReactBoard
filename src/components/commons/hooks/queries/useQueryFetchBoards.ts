@@ -21,6 +21,7 @@ export const useQueryFetchBoards = () => {
   const result = useQuery<Pick<IQuery, "fetchBoards">, IQueryFetchBoardsArgs>(
     FETCH_BOARDS
   );
+
   return result;
 };
 // fetchBoards 쿼리를 useQuery를 통해 가져오고 data안에 저장, refetch 기능도 사용할수 있게 명시(?)

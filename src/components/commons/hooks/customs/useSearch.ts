@@ -9,11 +9,11 @@ import type {
 import type { ApolloQueryResult } from "@apollo/client";
 
 export interface IUseSearchBarProps {
-  refetchBoardCount: (
+  refetchBoardCount?: (
     variables?: Partial<IQueryFetchBoardsCountArgs> | undefined
   ) => Promise<ApolloQueryResult<Pick<IQuery, "fetchBoardsCount">>>;
 
-  refetch: (
+  refetch?: (
     variables?: Partial<IQueryFetchBoardsArgs> | undefined
   ) => Promise<ApolloQueryResult<Pick<IQuery, "fetchBoards">>>;
 }
@@ -22,6 +22,9 @@ export const useSearch = (args: IUseSearchBarProps) => {
   const [keyword, setKeyword] = useState("");
 
   const getDebounce = _.debounce((value: string) => {
+    if (typeof args.refetch === "undefined") return;
+    if (typeof args.refetchBoardCount === "undefined") return;
+
     void args.refetch({ page: 1, search: value });
     void args.refetchBoardCount({ search: value });
 

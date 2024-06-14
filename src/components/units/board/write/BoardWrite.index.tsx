@@ -7,38 +7,20 @@ import { useCheckedId } from "../../../commons/hooks/customs/useCheckedId";
 import { useForm } from "react-hook-form";
 import { useToggle } from "../../../commons/hooks/customs/useToggle";
 import { useEffect, useState } from "react";
-import type { IBoardWriteProps } from "./BoardWrite.types";
-import { useAuth } from "../../../commons/hooks/customs/useAuth";
+import type { IBoardWriteProps, Iform } from "./BoardWrite.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { boardSchema } from "./BoardValidation";
 import UploadImage from "../../../commons/uploadImage/uploadImage.index";
 
-export interface Iform {
-  writer: string;
-  password: string;
-  title: string;
-  contents: string;
-  boardAddress?: {
-    zipcode?: string;
-    address?: string;
-    addressDetail?: string;
-  };
-  youtubeUrl?: string;
-  images?: string[];
-}
-
 export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
-  useAuth();
   const { id } = useCheckedId("boardId");
+
+  const [files, setFiles] = useState(["", "", ""]);
+  const [isOpenModal, modalToggle] = useToggle();
+
   const { onClickWrite, onClickEdit, onChangePassword } = useBoard({
     boardId: id,
   });
-
-  const [files, setFiles] = useState(["", "", ""]);
-  // const [isActive] = useToggle();
-  const [isOpenModal, modalToggle] = useToggle();
-
-  // 게시글 작성 안했을시 오류 보여주는 state
 
   const { register, handleSubmit, setValue, formState } = useForm<Iform>({
     resolver: yupResolver(boardSchema),
@@ -87,6 +69,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
             type="text"
             defaultValue={props.data?.fetchBoard.writer ?? ""}
             placeholder="작성자를 입력해주세요"
+            disabled={props.isEdit}
             {...register("writer")}
           />
           <S.Error>{formState.errors.writer?.message}</S.Error>

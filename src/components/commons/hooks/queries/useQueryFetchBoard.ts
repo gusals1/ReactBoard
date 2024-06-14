@@ -26,10 +26,10 @@ export const FETCH_BOARD = gql`
 `;
 
 // boardId를 받아야함.
-export const useQueryFetchBoard = (variables: IQueryFetchBoardArgs) => {
+export const useQueryFetchBoard = (boardId: IQueryFetchBoardArgs) => {
   const result = useQuery<Pick<IQuery, "fetchBoard">, IQueryFetchBoardArgs>(
     FETCH_BOARD,
-    { variables }
+    { variables: boardId }
   );
   return result;
 };

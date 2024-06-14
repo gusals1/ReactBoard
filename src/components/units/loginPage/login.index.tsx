@@ -8,8 +8,8 @@ export interface ILoginform {
   password: string;
 }
 export default function LoginPageUI(): JSX.Element {
+  // onClickLogin
   const { onClickLogin } = useUserData();
-
   const { onClickMoveToPage } = useMoveToPage();
 
   const { register, handleSubmit } = useForm<ILoginform>();
@@ -26,6 +26,7 @@ export default function LoginPageUI(): JSX.Element {
             {...register("password")}
           />
         </S.InputWrap>
+        {/* handleSubmit(onClickLoginExample) */}
         <S.LoginButton onClick={handleSubmit(onClickLogin)}>
           로그인
         </S.LoginButton>

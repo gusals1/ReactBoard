@@ -2,13 +2,19 @@ import { Modal } from "antd";
 import { useMutationDeleteBoard } from "../mutations/useMutationDeleteBoard";
 import { useRouter } from "next/router";
 import { useMutationCreateBoard } from "../mutations/useMutationCreateBoard";
-import type { Iform } from "../../../units/board/write/BoardWrite.index";
+import type { Iform } from "../../../units/board/write/BoardWrite.types";
 import { useMutationUpdateBoard } from "../mutations/useMutationUpdateBoard";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
+// import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
+import _ from "lodash";
+import { FETCH_BOARD } from "../queries/useQueryFetchBoard";
 
 interface useBoardArgs {
   boardId?: string;
+}
+interface IPrev {
+  __ref: string;
 }
 interface IUpdateBoardInput {
   title?: string;
@@ -26,18 +32,23 @@ export const useBoard = (args: useBoardArgs) => {
   const router = useRouter();
   const [password, setPassword] = useState("");
 
+  // const [uploadFile] = useMutationUploadFile();
   const [createBoard] = useMutationCreateBoard();
   const [updateBoard] = useMutationUpdateBoard();
   const [deleteBoard] = useMutationDeleteBoard();
 
+  const getDebounce = _.debounce((value: string) => {
+    setPassword(value);
+  }, 500);
+
   const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+    getDebounce(e.target.value);
   };
 
   const onClickWrite = async (data: Iform): Promise<void> => {
     if (!data.boardAddress) return;
+
     try {
-      // createBoard({ variables : api요청에 넣을 값 }) 을 result에 저장
       const result = await createBoard({
         variables: {
           createBoardInput: {
@@ -55,7 +66,17 @@ export const useBoard = (args: useBoardArgs) => {
             images: data.images,
           },
         },
+        update(cache, { data }) {
+          cache.modify({
+            fields: {
+              fetchBoards: (prev) => {
+                return [data?.createBoard, ...prev];
+              },
+            },
+          });
+        },
       });
+
       console.log("useBoard", data);
       // create요청이 실패하면 _id 속성이 없으니 error발생 아니면 성공
       if (result.data?.createBoard._id === undefined) {
@@ -75,6 +96,19 @@ export const useBoard = (args: useBoardArgs) => {
     try {
       await deleteBoard({
         variables: { boardId: args.boardId },
+        update(cache, { data }) {
+          cache.modify({
+            fields: {
+              fetchBoards: (prev, { readField }) => {
+                const deletedId = data?.deleteBoard;
+                const filteredPrev = prev.filter(
+                  (el: IPrev) => readField("_id", el) !== deletedId
+                );
+                return [...filteredPrev];
+              },
+            },
+          });
+        },
       });
       void router.push("/boards");
       Modal.success({ content: "게시글을 삭제했습니다" });
@@ -108,6 +142,12 @@ export const useBoard = (args: useBoardArgs) => {
           password,
           updateBoardInput,
         },
+        refetchQueries: [
+          {
+            query: FETCH_BOARD,
+            variables: { boardId: router.query.boardId },
+          },
+        ],
       });
       if (updateResult.data?.updateBoard._id === undefined) {
         Modal.error({ content: "요청에 문제가 있습니다" });

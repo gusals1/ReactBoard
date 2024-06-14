@@ -11,7 +11,7 @@ export const FETCH_USEDITEM = gql`
       name
       remarks
       contents
-      prpice
+      price
       tags
       createdAt
       images
@@ -20,11 +20,11 @@ export const FETCH_USEDITEM = gql`
   }
 `;
 
-export const useQueryFetchUsedItem = () => {
+export const useQueryFetchUsedItem = (usedItemId: IQueryFetchUseditemArgs) => {
   const result = useQuery<
     Pick<IQuery, "fetchUseditem">,
     IQueryFetchUseditemArgs
-  >(FETCH_USEDITEM);
+  >(FETCH_USEDITEM, { variables: usedItemId });
 
   return result;
 };

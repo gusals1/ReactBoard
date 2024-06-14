@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import LayoutHeader from "./header/LayoutHeader.container";
 import LayoutBanner from "./banner/LayoutBanner.container";
 import LayoutNavigation from "./navigation/LayoutNavigation.container";
 import LayoutFooter from "./footer/LayoutFooter.container";
 import { useRouter } from "next/router";
+import LayoutHeader from "./header/LayoutHeader.index";
 
 interface ILayoutProps {
   children: JSX.Element;

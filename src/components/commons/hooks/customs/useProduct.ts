@@ -3,12 +3,18 @@ import { useMutationCreateUseditem } from "../mutations/useMutationCreateUsedite
 import { useRouter } from "next/router";
 import type { IUseditemForm } from "../../../units/product/write/ProductWrite.index";
 import { useMutationUpdateUseditem } from "../mutations/useMutationUpdateUseditem";
+import { useMutationDeleteUseditem } from "../mutations/useMutationDeleteUseditem";
 
-export const useProduct = () => {
+interface IUseProductArgs {
+  usedItemId?: string;
+}
+
+export const useProduct = (args: IUseProductArgs) => {
   const router = useRouter();
 
   const [createUseditem] = useMutationCreateUseditem();
   const [updateUseditem] = useMutationUpdateUseditem();
+  const [deleteUseditem] = useMutationDeleteUseditem();
 
   const onClickUseditem = async (data: IUseditemForm): Promise<void> => {
     try {
@@ -21,6 +27,14 @@ export const useProduct = () => {
             price: Number(data.price),
             tags: data.tags,
             images: data.images,
+
+            // useditemAddress: {
+            //   zipcode: "",
+            //   address: "",
+            //   addressDetail: "",
+            //   lat: 11,
+            //   lng: 11,
+            // },
           },
         },
       });
@@ -72,5 +86,18 @@ export const useProduct = () => {
     }
   };
 
-  return { onClickUseditem, onClickUpdateItem };
+  const onClickDeleteItem = async (): Promise<void> => {
+    if (args.usedItemId === undefined) return;
+    try {
+      await deleteUseditem({
+        variables: { useditemId: args.usedItemId },
+      });
+      Modal.success({ content: "상품이 삭제되었습니다." });
+      void router.push("/shop");
+    } catch (error) {
+      if (error instanceof Error) Modal.error({ content: error.message });
+    }
+  };
+
+  return { onClickUseditem, onClickUpdateItem, onClickDeleteItem };
 };
