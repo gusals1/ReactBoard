@@ -50,17 +50,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
         "boardAddress.addressDetail",
         props.data.fetchBoard.boardAddress?.addressDetail ?? ""
       );
-      if (props.data.fetchBoard.images) {
-        const tempImageUrls = [...imageUrls];
-        props.data.fetchBoard.images.forEach((el, index) => {
-          if (index < tempImageUrls.length) {
-            tempImageUrls[index] = el;
-          }
-        });
-        setImageUrls(tempImageUrls);
-      }
     }
-    // console.log("files", files);
   }, [props.data]);
 
   const onChangeFiles = (file: File, index: number): void => {
@@ -187,7 +177,6 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
               imageUrl={el} // 빈 이미지 배열(string 타입)
               index={index}
               onChangeFiles={onChangeFiles}
-              images={props.data?.fetchBoard.images ?? ""}
             />
           ))}
         </S.ImageWrapper>

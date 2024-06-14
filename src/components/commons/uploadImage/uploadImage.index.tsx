@@ -6,7 +6,6 @@ import { Modal } from "antd";
 
 interface IUploadImageProps {
   imageUrl: string;
-  images?: string[] | string;
   index: number;
   files: File[];
   onChangeFiles: (file: File, index: number) => void;
@@ -38,14 +37,7 @@ export default function UploadImage(props: IUploadImageProps): JSX.Element {
   return (
     <>
       {props.imageUrl !== "" ? (
-        <UploadImageBox
-          onClick={onClickUpload}
-          src={
-            props.images
-              ? `https://storage.googleapis.com/${props.imageUrl}`
-              : props.imageUrl
-          }
-        />
+        <UploadImageBox onClick={onClickUpload} src={props.imageUrl} />
       ) : (
         <UploadButton onClick={onClickUpload}>
           <>+</>

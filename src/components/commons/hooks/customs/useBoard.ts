@@ -77,15 +77,14 @@ export const useBoard = (args: useBoardArgs) => {
         update(cache, { data }) {
           cache.modify({
             fields: {
-              fetchBoards: (prev) => {
-                return [data?.createBoard, ...prev];
+              fetchBoards: () => {
+                return [data?.createBoard];
               },
             },
           });
         },
       });
 
-      console.log("useBoard", data);
       // create요청이 실패하면 _id 속성이 없으니 error발생 아니면 성공
       if (result.data?.createBoard._id === undefined) {
         Modal.error({ content: "요청에 문제가 있습니다" });
@@ -143,6 +142,7 @@ export const useBoard = (args: useBoardArgs) => {
         updateBoardInput.boardAddress.addressDetail = data.addressDetail;
     }
     if (data.images) updateBoardInput.images = data.images;
+
     try {
       const updateResult = await updateBoard({
         variables: {
