@@ -17,11 +17,6 @@ export const useAuth = (): void => {
         void router.push("/boards");
       }
     });
-
-    if (accessToken === "") {
-      Modal.error({ content: "로그인 후 이용해주세요" });
-      void router.push("/boards");
-    }
   }, [accessToken]);
 
   // useEffect(() => {

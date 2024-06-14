@@ -11,11 +11,17 @@ import type { IBoardWriteProps, Iform } from "./BoardWrite.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { boardSchema } from "./BoardValidation";
 import UploadImage from "../../../commons/uploadImage/uploadImage.index";
+import { useRecoilState } from "recoil";
+import { isEditState } from "../../../commons/store";
 
 export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
   const { id } = useCheckedId("boardId");
+  const [isEdit] = useRecoilState(isEditState);
+  // files ==> 파일 선택할때 이미지에 대한 정보는 files로 들어온다
+  // 아마 files를 map으로 돌려서 promise All을 하면 결과값으로 string이 나올텐데 그 값을
+  const [files, setFiles] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState(["", "", ""]);
 
-  const [files, setFiles] = useState(["", "", ""]);
   const [isOpenModal, modalToggle] = useToggle();
 
   const { onClickWrite, onClickEdit, onChangePassword } = useBoard({
@@ -44,23 +50,46 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
         "boardAddress.addressDetail",
         props.data.fetchBoard.boardAddress?.addressDetail ?? ""
       );
-      setValue("images", props.data.fetchBoard.images ?? ["", "", ""]);
+      if (props.data.fetchBoard.images) {
+        const tempImageUrls = [...imageUrls];
+        props.data.fetchBoard.images.forEach((el, index) => {
+          if (index < tempImageUrls.length) {
+            tempImageUrls[index] = el;
+          }
+        });
+        setImageUrls(tempImageUrls);
+      }
     }
-    const images = props.data?.fetchBoard.images;
-    if (images !== undefined && images !== null) setFiles([...images]);
+    // console.log("files", files);
   }, [props.data]);
 
-  const onChangeFiles = (file: string, index: number): void => {
+  const onChangeFiles = (file: File, index: number): void => {
     // file값은 url값 index는 해당하는 number값.
-    const newFiles = [...files];
-    newFiles[index] = file;
-    setFiles(newFiles);
-    setValue("images", newFiles);
+
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = (event) => {
+      try {
+        if (typeof event.target?.result === "string") {
+          const tempUrls = [...imageUrls];
+          tempUrls[index] = event.target?.result;
+          setImageUrls(tempUrls);
+
+          const tempFiles = [...files];
+          tempFiles[index] = file;
+
+          setFiles(tempFiles);
+        }
+      } catch (error) {
+        if (error instanceof Error) alert(error.message);
+      }
+    };
   };
+  setValue(`images`, files);
 
   return (
     <S.Wrapper>
-      <S.BoardTitle>게시글 {props.isEdit ? "수정" : "등록"}</S.BoardTitle>
+      <S.BoardTitle>게시글 {isEdit ? "수정" : "등록"}</S.BoardTitle>
 
       <S.WriterSection>
         <S.HalfSection>
@@ -69,7 +98,7 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
             type="text"
             defaultValue={props.data?.fetchBoard.writer ?? ""}
             placeholder="작성자를 입력해주세요"
-            disabled={props.isEdit}
+            disabled={isEdit}
             {...register("writer")}
           />
           <S.Error>{formState.errors.writer?.message}</S.Error>
@@ -151,12 +180,14 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
         <S.BoardLabel>사진 첨부</S.BoardLabel>
         {/* 이미지 업로드 컴포넌트 분리 */}
         <S.ImageWrapper>
-          {files.map((el, index) => (
+          {imageUrls.map((el, index) => (
             <UploadImage
               key={uuidv4()}
-              files={el} // 여기로 들어온 el값은 ""값 기본값이기 때문에
+              files={files} // 빈 파일배열(File타입)
+              imageUrl={el} // 빈 이미지 배열(string 타입)
               index={index}
               onChangeFiles={onChangeFiles}
+              images={props.data?.fetchBoard.images ?? ""}
             />
           ))}
         </S.ImageWrapper>
@@ -172,11 +203,11 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
         <S.RadioLabel htmlFor="image">사진</S.RadioLabel>
       </S.Section>
       <S.RegistButton
-        onClick={handleSubmit(props.isEdit ? onClickEdit : onClickWrite)}
-        isEdit={props.isEdit}
+        onClick={handleSubmit(isEdit ? onClickEdit : onClickWrite)}
+        isEdit={isEdit}
         isValid={formState.isValid}
       >
-        {props.isEdit ? "수정" : "등록"}하기
+        {isEdit ? "수정" : "등록"}하기
       </S.RegistButton>
     </S.Wrapper>
   );

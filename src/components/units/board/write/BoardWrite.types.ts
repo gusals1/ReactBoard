@@ -1,7 +1,6 @@
 import type { IQuery } from "../../../../commons/types/generated/types";
 
 export interface IBoardWriteProps {
-  isEdit: boolean;
   data?: Pick<IQuery, "fetchBoard">;
 }
 
@@ -21,5 +20,5 @@ export interface Iform {
     addressDetail?: string;
   };
   youtubeUrl?: string;
-  images?: string[];
+  images?: File[];
 }

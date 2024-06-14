@@ -2,6 +2,11 @@ import { RecoilEnv, atom, selector } from "recoil";
 import { getAccessToken } from "../../../commons/libraries/getAccessToken";
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
 
+export const isEditState = atom({
+  key: "isEditState",
+  default: false,
+});
+
 export const accessTokenState = atom({
   key: "accessTokenState",
   default: "",

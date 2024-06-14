@@ -6,9 +6,9 @@ import type { Iform } from "../../../units/board/write/BoardWrite.types";
 import { useMutationUpdateBoard } from "../mutations/useMutationUpdateBoard";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
-// import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
 import _ from "lodash";
 import { FETCH_BOARD } from "../queries/useQueryFetchBoard";
+import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
 
 interface useBoardArgs {
   boardId?: string;
@@ -32,7 +32,7 @@ export const useBoard = (args: useBoardArgs) => {
   const router = useRouter();
   const [password, setPassword] = useState("");
 
-  // const [uploadFile] = useMutationUploadFile();
+  const [uploadFile] = useMutationUploadFile();
   const [createBoard] = useMutationCreateBoard();
   const [updateBoard] = useMutationUpdateBoard();
   const [deleteBoard] = useMutationDeleteBoard();
@@ -47,6 +47,14 @@ export const useBoard = (args: useBoardArgs) => {
 
   const onClickWrite = async (data: Iform): Promise<void> => {
     if (!data.boardAddress) return;
+    if (data.images === undefined) return;
+
+    const results = await Promise.all(
+      data.images.map(
+        async (el) => await uploadFile({ variables: { file: el } })
+      )
+    );
+    const resultUrls = results.map((el) => el.data?.uploadFile.url ?? "");
 
     try {
       const result = await createBoard({
@@ -63,7 +71,7 @@ export const useBoard = (args: useBoardArgs) => {
               address: data.boardAddress.address,
               addressDetail: data.boardAddress.zipcode,
             },
-            images: data.images,
+            images: resultUrls,
           },
         },
         update(cache, { data }) {

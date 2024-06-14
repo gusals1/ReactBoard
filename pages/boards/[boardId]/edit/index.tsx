@@ -6,6 +6,9 @@ import type {
   IQueryFetchBoardArgs,
 } from "../../../../src/commons/types/generated/types";
 import BoardWrite from "../../../../src/components/units/board/write/BoardWrite.index";
+import { isEditState } from "../../../../src/components/commons/store";
+import { useRecoilState } from "recoil";
+import { useEffect } from "react";
 
 export const FETCH_BOARD = gql`
   query fetchBoard($boardId: ID!) {
@@ -25,6 +28,11 @@ export const FETCH_BOARD = gql`
 `;
 
 export default function BoardEdit(): JSX.Element {
+  const [, setIsEdit] = useRecoilState(isEditState);
+  useEffect(() => {
+    setIsEdit(true);
+  }, []);
+
   const router = useRouter();
   /*  fetchBoard를 여기서 하는 이유
       write와 edit는 하나의 컴포넌트에서 분기되는데 그럼 write할때도 fetch요청이 들어가 낭비가 발생함
@@ -36,5 +44,5 @@ export default function BoardEdit(): JSX.Element {
     { variables: { boardId: router.query.boardId } }
   );
 
-  return <BoardWrite isEdit={true} data={data} />;
+  return <BoardWrite data={data} />;
 }
