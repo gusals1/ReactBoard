@@ -20,5 +20,5 @@ export interface Iform {
     addressDetail?: string;
   };
   youtubeUrl?: string;
-  images?: File[];
+  images?: File[] | string[];
 }

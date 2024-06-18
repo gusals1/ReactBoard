@@ -18,5 +18,6 @@ module.exports = {
     "react/display-name": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/promise-function-async": "off",
   },
 };

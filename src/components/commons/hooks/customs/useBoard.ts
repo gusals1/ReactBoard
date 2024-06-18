@@ -9,9 +9,13 @@ import type { ChangeEvent } from "react";
 import _ from "lodash";
 import { FETCH_BOARD } from "../queries/useQueryFetchBoard";
 import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
+import type { UseFormSetValue } from "react-hook-form";
 
 interface useBoardArgs {
   boardId?: string;
+  setValue?: UseFormSetValue<Iform>;
+  files?: File[];
+  imageUrls?: string[];
 }
 interface IPrev {
   __ref: string;
@@ -29,6 +33,7 @@ interface IUpdateBoardInput {
 }
 
 export const useBoard = (args: useBoardArgs) => {
+  const uploadImages: string[] = [];
   const router = useRouter();
   const [password, setPassword] = useState("");
 
@@ -46,16 +51,16 @@ export const useBoard = (args: useBoardArgs) => {
   };
 
   const onClickWrite = async (data: Iform): Promise<void> => {
-    if (!data.boardAddress) return;
-    if (data.images === undefined) return;
+    if (!args.files || !args.setValue || !data.boardAddress) return;
+    args.setValue("images", args.files);
+    if (!data.images) data.images = ["", "", ""];
 
     const results = await Promise.all(
-      data.images.map(
-        async (el) => await uploadFile({ variables: { file: el } })
-      )
+      data.images
+        .filter((el) => el)
+        .map(async (el) => await uploadFile({ variables: { file: el } }))
     );
     const resultUrls = results.map((el) => el.data?.uploadFile.url ?? "");
-
     try {
       const result = await createBoard({
         variables: {
@@ -84,7 +89,6 @@ export const useBoard = (args: useBoardArgs) => {
           });
         },
       });
-
       // create요청이 실패하면 _id 속성이 없으니 error발생 아니면 성공
       if (result.data?.createBoard._id === undefined) {
         Modal.error({ content: "요청에 문제가 있습니다" });
@@ -125,23 +129,46 @@ export const useBoard = (args: useBoardArgs) => {
   };
 
   /** 수정하기 버튼 클릭 함수 */
-  const onClickEdit = async (data: any): Promise<void> => {
+  const onClickEdit = async (data: Iform): Promise<void> => {
+    if (!args.files || !args.setValue || !data.images) return;
+    if (!data.boardAddress) return;
     if (!router || typeof router.query.boardId !== "string") return;
+    args.setValue("images", args.files);
 
+    args.imageUrls?.forEach((el, index) => {
+      if (el.includes("codecamp")) uploadImages[index] = el;
+    });
+
+    const results = await Promise.all(
+      data.images
+        .filter((el) => el)
+        .map(async (el) => await uploadFile({ variables: { file: el } }))
+    );
+    const resultUpload = results.map((el) => el.data?.uploadFile.url ?? "");
+
+    const resultUrls = uploadImages.concat(resultUpload);
+    // console.log(resultUrls);
     // updateBoardInput 형식으로 데이터를 받기때문에 수정할 데이터 객체를 하나 생성함.
     const updateBoardInput: IUpdateBoardInput = {};
     if (data.title) updateBoardInput.title = data.title;
     if (data.contents) updateBoardInput.contents = data.contents;
     if (data.youtubeUrl) updateBoardInput.youtubeUrl = data.youtubeUrl;
     // 주소에 들어갈 항목이 다 있으면 address객체 생성해서 데이터 넣어줌
-    if (data.zipcode && data.address && data.addressDetail) {
+    if (
+      data.boardAddress.zipcode &&
+      data.boardAddress.address &&
+      data.boardAddress.addressDetail
+    ) {
       updateBoardInput.boardAddress = {};
-      if (data.zipcode) updateBoardInput.boardAddress.zipcode = data.zipcode;
-      if (data.address) updateBoardInput.boardAddress.address = data.address;
-      if (data.addressDetail)
-        updateBoardInput.boardAddress.addressDetail = data.addressDetail;
+      if (data.boardAddress.zipcode)
+        updateBoardInput.boardAddress.zipcode = data.boardAddress.zipcode;
+      if (data.boardAddress.address)
+        updateBoardInput.boardAddress.address = data.boardAddress.address;
+      if (data.boardAddress.addressDetail)
+        updateBoardInput.boardAddress.addressDetail =
+          data.boardAddress.addressDetail;
     }
-    if (data.images) updateBoardInput.images = data.images;
+    if (resultUrls) updateBoardInput.images = resultUrls;
 
     try {
       const updateResult = await updateBoard({

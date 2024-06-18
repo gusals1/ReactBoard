@@ -8,7 +8,6 @@ export default function CommentList(): JSX.Element {
   // 무한스크롤 적용
 
   const { id } = useCheckedId("boardId");
-
   const { data, fetchMore } = useQueryFetchBoardComment({ boardId: id });
 
   const FetchMoreComment = (): void => {

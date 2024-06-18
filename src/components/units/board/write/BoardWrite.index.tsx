@@ -24,13 +24,16 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
 
   const [isOpenModal, modalToggle] = useToggle();
 
-  const { onClickWrite, onClickEdit, onChangePassword } = useBoard({
-    boardId: id,
-  });
-
   const { register, handleSubmit, setValue, formState } = useForm<Iform>({
     resolver: yupResolver(boardSchema),
     mode: "onChange",
+  });
+
+  const { onClickWrite, onClickEdit, onChangePassword } = useBoard({
+    boardId: id,
+    setValue,
+    files,
+    imageUrls,
   });
 
   useEffect(() => {
@@ -50,32 +53,46 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
         "boardAddress.addressDetail",
         props.data.fetchBoard.boardAddress?.addressDetail ?? ""
       );
+      const newImageUrls = [...imageUrls]; // 기존 배열을 복사합니다.["","",""]
+
+      props.data.fetchBoard.images?.forEach((image, index) => {
+        // fetch한 이미지를 반복해서 꺼내온다.
+        if (index < newImageUrls.length) {
+          // 각각의 upload된 이미지 배열이 newImageUrl에 들어가게 된다.
+          newImageUrls[index] = image;
+        }
+      });
+      // 그 값을 넣어서 반환 ==> ["","",""]에서 ["codecamp-file-storage/2024/6/18/1.jpg","codecamp-file-storage/2024/6/18/키보드.jpg",""]
+      // 이렇게 된것을 반환
+      setImageUrls(newImageUrls);
+      // setValue한 이미지에도 이 값을 넣어준다.
+      setValue("images", newImageUrls);
     }
   }, [props.data]);
 
-  const onChangeFiles = (file: File, index: number): void => {
+  // files나 setValue가 일어날때마다 setValue("images",files)를 실행시켜서 값을 넣어줌.
+
+  const onChangeFiles = async (
+    file: File,
+    imageUrl: string,
+    index: number
+  ): Promise<void> => {
     // file값은 url값 index는 해당하는 number값.
+    try {
+      const tempUrls = [...imageUrls];
+      tempUrls[index] = imageUrl;
+      setImageUrls(tempUrls);
 
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onload = (event) => {
-      try {
-        if (typeof event.target?.result === "string") {
-          const tempUrls = [...imageUrls];
-          tempUrls[index] = event.target?.result;
-          setImageUrls(tempUrls);
-
-          const tempFiles = [...files];
-          tempFiles[index] = file;
-
-          setFiles(tempFiles);
-        }
-      } catch (error) {
-        if (error instanceof Error) alert(error.message);
-      }
-    };
+      const tempFiles = [...files];
+      tempFiles[index] = file;
+      await new Promise((resolve) => {
+        setFiles(tempFiles);
+        resolve(true);
+      });
+    } catch (error) {
+      if (error instanceof Error) alert(error.message);
+    }
   };
-  setValue(`images`, files);
 
   return (
     <S.Wrapper>
@@ -173,7 +190,6 @@ export default function BoardWrite(props: IBoardWriteProps): JSX.Element {
           {imageUrls.map((el, index) => (
             <UploadImage
               key={uuidv4()}
-              files={files} // 빈 파일배열(File타입)
               imageUrl={el} // 빈 이미지 배열(string 타입)
               index={index}
               onChangeFiles={onChangeFiles}

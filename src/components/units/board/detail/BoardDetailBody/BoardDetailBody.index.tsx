@@ -14,9 +14,9 @@ export default function BoardDetailBody(props: IBoardDetailHeaderProps) {
         <S.BoardImageWrapper>
           {props.data?.fetchBoard?.images
             ?.filter((el) => el)
-            .map((el) => (
+            .map((el, index) => (
               <S.BoardImage
-                key={el}
+                key={index}
                 src={`https://storage.googleapis.com/${el}`}
                 alt="image"
               />

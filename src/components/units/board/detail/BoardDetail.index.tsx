@@ -11,7 +11,6 @@ export default function BoardDetail(): JSX.Element {
     max-width: 1200px;
     margin: 100px auto 0;
     padding: 80px 102px;
-    /* width: 100%; */
     box-shadow: 0px 0px 10px gray;
   `;
 
