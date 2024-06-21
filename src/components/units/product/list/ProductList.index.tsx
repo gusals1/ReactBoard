@@ -1,16 +1,23 @@
 import * as S from "./ProductList.style";
-import { v4 as uuidv4 } from "uuid";
 import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
-import SearchBar from "../../../commons/searchbar/searchBar.index";
-import { useSearch } from "../../../commons/hooks/customs/useSearch";
 import { useQueryFetchUsedItems } from "../../../commons/hooks/queries/useQueryFetchUsedItems";
+import { type ChangeEvent, useState, useEffect } from "react";
 
 export default function ProductList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
 
-  const { keyword, onChangeSearchBar } = useSearch({});
-  const { data } = useQueryFetchUsedItems();
-  const secretKey = "!#@!@$";
+  const [soldOut, setSoldout] = useState(false);
+  const { data, refetch } = useQueryFetchUsedItems({ isSoldout: soldOut });
+  // const secretKey = "!#@!@$";
+
+  const onChangeSoldout = (e: ChangeEvent<HTMLInputElement>) => {
+    setSoldout(e.target.value === "tab2");
+  };
+
+  useEffect(() => {
+    console.log(soldOut);
+    void refetch({ isSoldout: soldOut });
+  }, [soldOut, refetch]);
 
   return (
     <S.Wrapper>
@@ -36,14 +43,29 @@ export default function ProductList(): JSX.Element {
       {/* 제목, 날짜, 검색버튼 */}
       <S.TableTop>
         <S.SalesWrapper>
-          <S.Sale>판매중 상품</S.Sale>
-          <S.Sale>판매된 상품</S.Sale>
+          <S.Sale>
+            <S.RadioInput
+              type="radio"
+              id="tab1"
+              value="tab1"
+              name="tab"
+              checked={!soldOut}
+              onChange={onChangeSoldout}
+            />
+            <S.RadioLabel htmlFor="tab1">판매중 상품</S.RadioLabel>
+          </S.Sale>
+          <S.Sale>
+            <S.RadioInput
+              type="radio"
+              id="tab2"
+              name="tab"
+              value="tab2"
+              checked={soldOut}
+              onChange={onChangeSoldout}
+            />
+            <S.RadioLabel htmlFor="tab2">판매된 상품</S.RadioLabel>
+          </S.Sale>
         </S.SalesWrapper>
-        <S.SearchWrap>
-          <SearchBar onChangeSearchBar={onChangeSearchBar} text="상품" />
-          <S.SelectDate type="date" required pattern="\d{4}-\d{2}\d{2}" />
-          <S.SearchButton>검색</S.SearchButton>
-        </S.SearchWrap>
       </S.TableTop>
       {/* 게시글 목록 */}
       <S.Table>
@@ -62,16 +84,7 @@ export default function ProductList(): JSX.Element {
               alt="goods image"
             />
             <S.ProdInfo>
-              <S.ProdName>
-                {el.name
-                  .replaceAll(keyword, `${secretKey}${keyword}${secretKey}`)
-                  .split(secretKey)
-                  .map((li) => (
-                    <S.MatchKeyword key={uuidv4()} isMatch={keyword === li}>
-                      {li}
-                    </S.MatchKeyword>
-                  ))}
-              </S.ProdName>
+              <S.ProdName>{el.name}</S.ProdName>
               <S.ProdRemarks>{el.remarks}</S.ProdRemarks>
               <S.ProdTags>{el.tags}</S.ProdTags>
               <S.ProdProfile>

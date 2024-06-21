@@ -4,10 +4,8 @@ import ProductDetailFooter from "./ProductDetailFooter/ProductDetailFooter.index
 import ProductDetailBody from "./ProductDetailBody/ProductDetailBody.index";
 import ProductDetailHeader from "./ProductDetailHeader/ProductDetailHeader.index";
 import { useQueryFetchUsedItem } from "../../../commons/hooks/queries/useQueryFetchUsedItem";
-import { useAuth } from "../../../commons/hooks/customs/useAuth";
 
 export default function ProductDetail(): JSX.Element {
-  useAuth();
   const Wrapper = styled.div`
     max-width: 1200px;
     margin: 100px auto 0;

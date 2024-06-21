@@ -24,7 +24,7 @@ export default function BoardDetail(): JSX.Element {
         <BoardDetailBody data={data} />
       </Wrapper>
       <BoardDetailFooter />
-      <CommentList />
+      <CommentList id={id} />
     </>
   );
 }

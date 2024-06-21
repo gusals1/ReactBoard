@@ -86,36 +86,28 @@ export const SalesWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  gap: 20px;
+  margin-top: 20px;
 `;
-export const Sale = styled.p`
-  font-weight: bold;
+export const Sale = styled.div`
+  width: 100%;
 `;
-export const SearchWrap = styled.div`
-  width: 45%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 20px;
+export const RadioInput = styled.input`
+  display: none;
+  &:checked + label {
+    color: #fff;
+    font-weight: bold;
+    background-color: #85dfff;
+  }
 `;
-
-export const SelectDate = styled.input`
-  height: 52px;
-  font-size: 16px;
-  text-align: center;
-  cursor: pointer;
+export const RadioLabel = styled.label`
+  display: block;
+  box-sizing: border-box;
+  font-size: 18px;
+  padding: 15px 25px;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
 `;
-export const SearchButton = styled.button`
-  width: 78px;
-  height: 52px;
-  background: #000;
-  border: none;
-  color: #fff;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-`;
-
 // table style
 export const Table = styled.div`
   width: 100%;
@@ -123,7 +115,6 @@ export const Table = styled.div`
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  margin-top: 40px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 `;

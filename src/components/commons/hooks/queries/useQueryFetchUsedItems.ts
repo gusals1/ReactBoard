@@ -4,9 +4,10 @@ import type {
   IQueryFetchUseditemsArgs,
 } from "../../../../commons/types/generated/types";
 
+// isSoldout: $isSoldout
 export const FETCH_USEDITEMS = gql`
-  query {
-    fetchUseditems(page: 1) {
+  query fetchUseditems($isSoldout: Boolean) {
+    fetchUseditems(page: 1, isSoldout: $isSoldout) {
       _id
       name
       remarks
@@ -16,18 +17,20 @@ export const FETCH_USEDITEMS = gql`
       images
       pickedCount
       createdAt
-      seller{
+      seller {
         name
       }
     }
   }
 `;
-
-export const useQueryFetchUsedItems = () => {
+export interface Args {
+  isSoldout: boolean;
+}
+export const useQueryFetchUsedItems = (args: Args) => {
   const result = useQuery<
     Pick<IQuery, "fetchUseditems">,
     IQueryFetchUseditemsArgs
-  >(FETCH_USEDITEMS);
+  >(FETCH_USEDITEMS, { variables: { isSoldout: args.isSoldout } });
 
   return result;
 };

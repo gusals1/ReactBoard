@@ -1,14 +1,15 @@
 import InfiniteScroll from "react-infinite-scroller";
 import CommentListItem from "./CommentList.Item";
-import { useCheckedId } from "../../../../commons/hooks/customs/useCheckedId";
 import { useQueryFetchBoardComment } from "../../../../commons/hooks/queries/useQueryFetchBoardComment";
 import CommentWrite from "../commentWrite/CommentWrite.index";
 
-export default function CommentList(): JSX.Element {
+interface ICommentListProps {
+  id: string;
+}
+export default function CommentList(props: ICommentListProps): JSX.Element {
   // 무한스크롤 적용
 
-  const { id } = useCheckedId("boardId");
-  const { data, fetchMore } = useQueryFetchBoardComment({ boardId: id });
+  const { data, fetchMore } = useQueryFetchBoardComment({ boardId: props.id });
 
   const FetchMoreComment = (): void => {
     // 추가 패치할때 현재 페이지의 +1을 page에 넣음
