@@ -4,88 +4,74 @@ import UploadImage from "../../../commons/uploadImage/uploadImage.index";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../commons/hooks/customs/useAuth";
-import type { IProductWriteProps } from "./ProductWrite.types";
+import type { IProductWriteProps, IUseditemForm } from "./ProductWrite.types";
 import { useProduct } from "../../../commons/hooks/customs/useProduct";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
-
-export interface IUseditemForm {
-  name: string;
-  remarks: string;
-  contents: string;
-  price: number;
-  tags: string[];
-  images?: string[];
-}
-declare const window: typeof globalThis & {
-  kakao: any;
-};
-
-const ReactQuill = dynamic(async () => await import("react-quill"), {
-  ssr: false,
-});
+import { useCheckedId } from "../../../commons/hooks/customs/useCheckedId";
 
 export default function ProductWrite(props: IProductWriteProps): JSX.Element {
   useAuth();
-  const { onClickUseditem, onClickUpdateItem } = useProduct({});
-  const [files, setFiles] = useState(["", "", ""]);
+  const { id } = useCheckedId("useditemId");
+  const [files, setFiles] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState(["", "", ""]);
 
-  const onChangeFiles = (file: string, index: number): void => {
-    // file값은 url값 index는 해당하는 number값.
-    const newFiles = [...files];
-    newFiles[index] = file;
-    setFiles(newFiles);
-    setValue("images", newFiles);
-  };
-  // ------------------------------------------------------------------------------
+  const { register, handleSubmit, setValue } = useForm<IUseditemForm>({
+    mode: "onChange",
+  });
 
-  const { register, handleSubmit, setValue, trigger } = useForm<IUseditemForm>({
-    mode: "onSubmit",
+  const { onClickUseditem, onClickUpdateItem } = useProduct({
+    useditemId: id,
+    setValue,
+    files,
+    imageUrls,
   });
 
   useEffect(() => {
     if (props.data) {
-      setValue("name", props.data?.fetchUseditem.name ?? "");
-      setValue("remarks", props.data?.fetchUseditem.remarks ?? "");
-      setValue("contents", props.data?.fetchUseditem.contents ?? "");
-      setValue("price", Number(props.data?.fetchUseditem.price) ?? 0);
-      setValue("tags", props.data?.fetchUseditem.tags ?? [""]);
-      const images = props.data?.fetchUseditem.images;
-      if (images !== undefined && images !== null) setFiles([...images]);
+      setValue("name", props.data.fetchUseditem.name ?? "");
+      setValue("remarks", props.data.fetchUseditem.remarks ?? "");
+      setValue("contents", props.data.fetchUseditem.contents ?? "");
+      setValue("tags", props.data.fetchUseditem.tags ?? [""]);
+      setValue("price", props.data.fetchUseditem.price ?? 0);
+
+      const newImageUrls = [...imageUrls]; // 기존 배열을 복사합니다.["","",""]
+
+      props.data.fetchUseditem.images?.forEach((image, index) => {
+        // fetch한 이미지를 반복해서 꺼내온다.
+        if (index < newImageUrls.length) {
+          // 각각의 upload된 이미지 배열이 newImageUrl에 들어가게 된다.
+          newImageUrls[index] = image;
+        }
+      });
+      // 그 값을 넣어서 반환 ==> ["","",""]에서 ["codecamp-file-storage/2024/6/18/1.jpg","codecamp-file-storage/2024/6/18/키보드.jpg",""]
+      // 이렇게 된것을 반환
+      setImageUrls(newImageUrls);
+      // setValue한 이미지에도 이 값을 넣어준다.
+      setValue("images", newImageUrls);
     }
   }, [props.data]);
 
-  useEffect(() => {
-    const script = document.createElement("script");
+  const onChangeFiles = async (
+    file: File,
+    imageUrl: string,
+    index: number
+  ): Promise<void> => {
+    // file값은 url값 index는 해당하는 number값.
+    try {
+      const tempUrls = [...imageUrls];
+      tempUrls[index] = imageUrl;
+      setImageUrls(tempUrls);
 
-    script.src =
-      "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=0f1c57c699441fa8d38826a9465589fd";
-    // head 태그안에 추가
-    document.head.appendChild(script);
-    script.onload = () => {
-      window.kakao.maps.load(function () {
-        const container = document.getElementById("map"); // 지도를 담을 영역의 DOM 레퍼런스
-        const options = {
-          // 지도를 생성할 때 필요한 기본 옵션
-          center: new window.kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표.
-          level: 3, // 지도의 레벨(확대, 축소 정도)
-        };
-        const map = new window.kakao.maps.Map(container, options); // 지도 생성 및 객체 리턴
-        // console.log(map);
-
-        const marker = new window.kakao.maps.Marker({
-          position: map.getCenter(),
-        });
-        marker.setMap(map);
+      const tempFiles = [...files];
+      tempFiles[index] = file;
+      await new Promise((resolve) => {
+        setFiles(tempFiles);
+        resolve(true);
       });
-    };
-  }, []);
-
-  const onChangeContents = (value: string) => {
-    // console.log(value);
-    setValue("contents", value === "<p><br></p>" ? "" : value);
-    void trigger("contents");
+    } catch (error) {
+      if (error instanceof Error) alert(error.message);
+    }
   };
+  // ------------------------------------------------------------------------------
 
   return (
     <S.Wrapper>
@@ -110,13 +96,11 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
 
         {/* contents */}
         <S.ProdLabel>상품설명</S.ProdLabel>
-        <S.ProdContents>
-          <ReactQuill
-            placeholder="내용을 입력해주세요"
-            style={S.webEditor}
-            onChange={onChangeContents}
-          />
-        </S.ProdContents>
+        <S.ProdContents
+          id="title"
+          placeholder="내용을 입력해주세요"
+          {...register("contents")}
+        ></S.ProdContents>
 
         {/* price */}
         <S.ProdLabel>가격</S.ProdLabel>
@@ -134,20 +118,13 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
           {...register("tags")}
         />
 
-        {/* 지도 들어갈 부분 */}
-        <S.ProdLabel>주소설정</S.ProdLabel>
-        <div
-          id="map"
-          style={{ width: 500, height: 400, marginBottom: 40 }}
-        ></div>
-
         <S.ProdLabel>사진 첨부</S.ProdLabel>
         {/* 이미지 업로드 컴포넌트 분리 */}
         <S.ImageWrapper>
-          {files.map((el, index) => (
+          {imageUrls.map((el, index) => (
             <UploadImage
               key={uuidv4()}
-              files={el} // 여기로 들어온 el값은 ""값 기본값이기 때문에
+              imageUrl={el} // 여기로 들어온 el값은 ""값 기본값이기 때문에
               index={index}
               onChangeFiles={onChangeFiles}
             />

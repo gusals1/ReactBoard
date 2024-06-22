@@ -7,7 +7,6 @@ import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../store";
 import type { ILoginform } from "../../../units/loginPage/login.index";
 import { useMutationLogoutUser } from "../mutations/useMutationLogoutUser";
-import { useMutationLoginUserExample } from "../mutations/useMutationLoginUserExample";
 
 export const useUserData = () => {
   const router = useRouter();
@@ -15,7 +14,6 @@ export const useUserData = () => {
 
   const [createUser] = useMutationCreateuser();
   const [loginUser] = useMutationLoginUser();
-  const [loginUserExample] = useMutationLoginUserExample();
   const [logoutUser] = useMutationLogoutUser();
 
   const onClickSignUp = async (data: ISignupForm): Promise<void> => {
@@ -60,29 +58,6 @@ export const useUserData = () => {
     }
   };
 
-  const onClickLoginExample = async (data: ILoginform): Promise<void> => {
-    try {
-      const result = await loginUserExample({
-        variables: {
-          email: data.email,
-          password: data.password,
-        },
-      });
-      const accessToken = result.data?.loginUserExample.accessToken;
-
-      if (accessToken === undefined) {
-        Modal.error({ content: "로그인에 실패했습니다" });
-        return;
-      }
-
-      setAccessToken(accessToken);
-      Modal.success({ content: "로그인 성공하셨습니다." });
-      void router.push("/boards");
-    } catch (error) {
-      if (error instanceof Error) Modal.error({ content: error.message });
-    }
-  };
-
   const onClickLogout = async () => {
     try {
       const result = await logoutUser();
@@ -96,5 +71,5 @@ export const useUserData = () => {
     }
   };
 
-  return { onClickSignUp, onClickLogin, onClickLogout, onClickLoginExample };
+  return { onClickSignUp, onClickLogin, onClickLogout };
 };

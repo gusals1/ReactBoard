@@ -13,23 +13,12 @@ import type { UseFormSetValue } from "react-hook-form";
 
 interface useBoardArgs {
   boardId?: string;
-  setValue?: UseFormSetValue<Iform>;
+  setValue?: UseFormSetValue<Iform> | undefined;
   files?: File[];
   imageUrls?: string[];
 }
 interface IPrev {
   __ref: string;
-}
-interface IUpdateBoardInput {
-  title?: string;
-  contents?: string;
-  youtubeUrl?: string;
-  boardAddress?: {
-    zipcode?: string;
-    address?: string;
-    addressDetail?: string;
-  };
-  images?: string[];
 }
 
 export const useBoard = (args: useBoardArgs) => {
@@ -52,11 +41,9 @@ export const useBoard = (args: useBoardArgs) => {
 
   const onClickWrite = async (data: Iform): Promise<void> => {
     if (!args.files || !args.setValue || !data.boardAddress) return;
-    args.setValue("images", args.files);
-    if (!data.images) data.images = ["", "", ""];
 
     const results = await Promise.all(
-      data.images
+      args.files
         .filter((el) => el)
         .map(async (el) => await uploadFile({ variables: { file: el } }))
     );
@@ -129,6 +116,17 @@ export const useBoard = (args: useBoardArgs) => {
   };
 
   /** 수정하기 버튼 클릭 함수 */
+  interface IUpdateBoardInput {
+    title?: string;
+    contents?: string;
+    youtubeUrl?: string;
+    boardAddress?: {
+      zipcode?: string;
+      address?: string;
+      addressDetail?: string;
+    };
+    images?: string[];
+  }
   const onClickEdit = async (data: Iform): Promise<void> => {
     if (!args.files || !args.setValue || !data.images) return;
     if (!data.boardAddress) return;
@@ -140,7 +138,7 @@ export const useBoard = (args: useBoardArgs) => {
     });
 
     const results = await Promise.all(
-      data.images
+      args.files
         .filter((el) => el)
         .map(async (el) => await uploadFile({ variables: { file: el } }))
     );

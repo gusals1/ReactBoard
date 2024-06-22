@@ -9,3 +9,12 @@ export interface IProductWriteProps {
   isEdit: boolean;
   data?: Pick<IQuery, "fetchUseditem">;
 }
+
+export interface IUseditemForm {
+  name: string;
+  remarks: string;
+  contents: string;
+  price: number;
+  tags: string[];
+  images?: File[] | string[];
+}

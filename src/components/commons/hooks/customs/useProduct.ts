@@ -1,22 +1,36 @@
 import { Modal } from "antd";
 import { useMutationCreateUseditem } from "../mutations/useMutationCreateUseditem";
 import { useRouter } from "next/router";
-import type { IUseditemForm } from "../../../units/product/write/ProductWrite.index";
 import { useMutationUpdateUseditem } from "../mutations/useMutationUpdateUseditem";
 import { useMutationDeleteUseditem } from "../mutations/useMutationDeleteUseditem";
+import type { UseFormSetValue } from "react-hook-form";
+import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
+import type { IUseditemForm } from "../../../units/product/write/ProductWrite.types";
 
 interface IUseProductArgs {
-  usedItemId?: string;
+  useditemId?: string;
+  setValue?: UseFormSetValue<IUseditemForm> | undefined;
+  files?: File[];
+  imageUrls?: string[];
 }
 
 export const useProduct = (args: IUseProductArgs) => {
   const router = useRouter();
-
+  const [uploadFile] = useMutationUploadFile();
   const [createUseditem] = useMutationCreateUseditem();
   const [updateUseditem] = useMutationUpdateUseditem();
   const [deleteUseditem] = useMutationDeleteUseditem();
 
   const onClickUseditem = async (data: IUseditemForm): Promise<void> => {
+    if (!args.files || !args.setValue) return;
+
+    const results = await Promise.all(
+      args.files
+        .filter((el) => el)
+        .map(async (el) => await uploadFile({ variables: { file: el } }))
+    );
+    const resultUrls = results.map((el) => el.data?.uploadFile.url ?? "");
+    console.log(resultUrls);
     try {
       const result = await createUseditem({
         variables: {
@@ -26,23 +40,15 @@ export const useProduct = (args: IUseProductArgs) => {
             contents: data.contents,
             price: Number(data.price),
             tags: data.tags,
-            images: data.images,
-
-            // useditemAddress: {
-            //   zipcode: "",
-            //   address: "",
-            //   addressDetail: "",
-            //   lat: 11,
-            //   lng: 11,
-            // },
+            images: resultUrls,
           },
         },
       });
+
       if (result.data?.createUseditem._id === undefined) {
         Modal.error({ content: "요청에 문제가 있습니다" });
         return;
       }
-
       void router.push(`/shop/${result.data.createUseditem._id}`);
       Modal.success({ content: "상품 등록에 성공하셨습니다" });
     } catch (error) {
@@ -87,10 +93,10 @@ export const useProduct = (args: IUseProductArgs) => {
   };
 
   const onClickDeleteItem = async (): Promise<void> => {
-    if (args.usedItemId === undefined) return;
+    if (args.useditemId === undefined) return;
     try {
       await deleteUseditem({
-        variables: { useditemId: args.usedItemId },
+        variables: { useditemId: args.useditemId },
       });
       Modal.success({ content: "상품이 삭제되었습니다." });
       void router.push("/shop");

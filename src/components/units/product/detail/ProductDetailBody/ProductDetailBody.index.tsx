@@ -32,9 +32,9 @@ export default function ProductDetailBody(props: IproductDetailHeaderProps) {
         <S.ProductImageWrapper>
           {props.data?.fetchUseditem?.images
             ?.filter((el) => el)
-            .map((el) => (
+            .map((el, index) => (
               <S.ProductImage
-                key={el}
+                key={index}
                 src={`https://storage.googleapis.com/${el}`}
                 alt="image"
               />

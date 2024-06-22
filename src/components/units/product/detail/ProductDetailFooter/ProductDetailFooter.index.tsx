@@ -7,7 +7,7 @@ export default function ProductDetailFooter() {
   const { onClickMoveToPage } = useMoveToPage();
   const { id } = useCheckedId("useditemId");
 
-  const { onClickDeleteItem } = useProduct({ usedItemId: id });
+  const { onClickDeleteItem } = useProduct({ useditemId: id });
 
   return (
     <>

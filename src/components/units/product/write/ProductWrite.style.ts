@@ -42,10 +42,22 @@ export const ProdInput = styled.input`
     border: 2px solid lightblue;
   }
 `;
-export const ProdContents = styled.div`
+
+export const ProdContents = styled.textarea`
   width: 100%;
-  min-height: 350px;
-  margin-bottom: 40px;
+  height: 480px;
+  resize: none;
+  padding: 16px;
+  outline: none;
+  border: 1px solid #bdbdbd;
+  ::placeholder {
+    font-weight: 400;
+    font-size: 16px;
+    color: #bdbdbd;
+  }
+  :focus {
+    border: 2px solid lightblue;
+  }
 `;
 
 export const ImageWrapper = styled.div`

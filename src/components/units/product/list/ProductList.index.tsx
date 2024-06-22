@@ -15,7 +15,6 @@ export default function ProductList(): JSX.Element {
   };
 
   useEffect(() => {
-    console.log(soldOut);
     void refetch({ isSoldout: soldOut });
   }, [soldOut, refetch]);
 
