@@ -3,13 +3,14 @@ import { v4 as uuidv4 } from "uuid";
 import UploadImage from "../../../commons/uploadImage/uploadImage.index";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../../commons/hooks/customs/useAuth";
 import type { IProductWriteProps, IUseditemForm } from "./ProductWrite.types";
 import { useProduct } from "../../../commons/hooks/customs/useProduct";
 import { useCheckedId } from "../../../commons/hooks/customs/useCheckedId";
+import { isEditState } from "../../../commons/store";
+import { useRecoilState } from "recoil";
 
 export default function ProductWrite(props: IProductWriteProps): JSX.Element {
-  useAuth();
+  const [isEdit] = useRecoilState(isEditState);
   const { id } = useCheckedId("useditemId");
   const [files, setFiles] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
@@ -75,7 +76,7 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
 
   return (
     <S.Wrapper>
-      <S.ProdTitle>상품{props.isEdit ? "수정" : "등록"}</S.ProdTitle>
+      <S.ProdTitle>상품{isEdit ? "수정" : "등록"}</S.ProdTitle>
 
       <S.Section>
         {/* name */}
@@ -131,20 +132,10 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
           ))}
         </S.ImageWrapper>
 
-        <S.ProdLabel>메인 설정</S.ProdLabel>
-
-        <S.RadioButton type="radio" id="youtube" name="radio-button" />
-        <S.RadioLabel htmlFor="youtube">사진1</S.RadioLabel>
-
-        <S.RadioButton type="radio" id="image" name="radio-button" />
-        <S.RadioLabel htmlFor="image">사진2</S.RadioLabel>
-
         <S.RegistButton
-          onClick={handleSubmit(
-            props.isEdit ? onClickUpdateItem : onClickUseditem
-          )}
+          onClick={handleSubmit(isEdit ? onClickUpdateItem : onClickUseditem)}
         >
-          {props.isEdit ? "수정" : "등록"}하기
+          {isEdit ? "수정" : "등록"}하기
         </S.RegistButton>
       </S.Section>
     </S.Wrapper>

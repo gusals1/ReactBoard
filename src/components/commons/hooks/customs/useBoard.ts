@@ -21,6 +21,18 @@ interface IPrev {
   __ref: string;
 }
 
+interface IUpdateBoardInput {
+  title?: string;
+  contents?: string;
+  youtubeUrl?: string;
+  boardAddress?: {
+    zipcode?: string;
+    address?: string;
+    addressDetail?: string;
+  };
+  images?: string[];
+}
+
 export const useBoard = (args: useBoardArgs) => {
   const uploadImages: string[] = [];
   const router = useRouter();
@@ -41,9 +53,12 @@ export const useBoard = (args: useBoardArgs) => {
 
   const onClickWrite = async (data: Iform): Promise<void> => {
     if (!args.files || !args.setValue || !data.boardAddress) return;
+    args.setValue("images", args.files);
+
+    if (!data.images) data.images = ["", "", ""];
 
     const results = await Promise.all(
-      args.files
+      data.images
         .filter((el) => el)
         .map(async (el) => await uploadFile({ variables: { file: el } }))
     );
@@ -116,17 +131,6 @@ export const useBoard = (args: useBoardArgs) => {
   };
 
   /** 수정하기 버튼 클릭 함수 */
-  interface IUpdateBoardInput {
-    title?: string;
-    contents?: string;
-    youtubeUrl?: string;
-    boardAddress?: {
-      zipcode?: string;
-      address?: string;
-      addressDetail?: string;
-    };
-    images?: string[];
-  }
   const onClickEdit = async (data: Iform): Promise<void> => {
     if (!args.files || !args.setValue || !data.images) return;
     if (!data.boardAddress) return;
@@ -144,8 +148,21 @@ export const useBoard = (args: useBoardArgs) => {
     );
     const resultUpload = results.map((el) => el.data?.uploadFile.url ?? "");
 
-    const resultUrls = uploadImages.concat(resultUpload);
-    // console.log(resultUrls);
+    let newIndex = 0; // 새 배열의 인덱스
+
+    // 기존 배열을 순회하면서 빈 공간을 새 배열의 값으로 채웁니다.
+    for (let i = 0; i < uploadImages.length; i++) {
+      if (uploadImages[i] === undefined && newIndex < resultUpload.length) {
+        uploadImages[i] = resultUpload[newIndex];
+        newIndex++;
+      }
+    }
+    // 새 배열의 값이 남아있는 경우, 기존 배열에 추가합니다.
+    while (newIndex < resultUpload.length) {
+      uploadImages.push(resultUpload[newIndex]);
+      newIndex++;
+    }
+
     // updateBoardInput 형식으로 데이터를 받기때문에 수정할 데이터 객체를 하나 생성함.
     const updateBoardInput: IUpdateBoardInput = {};
     if (data.title) updateBoardInput.title = data.title;
@@ -166,7 +183,7 @@ export const useBoard = (args: useBoardArgs) => {
         updateBoardInput.boardAddress.addressDetail =
           data.boardAddress.addressDetail;
     }
-    if (resultUrls) updateBoardInput.images = resultUrls;
+    if (resultUpload) updateBoardInput.images = uploadImages;
 
     try {
       const updateResult = await updateBoard({
@@ -186,6 +203,7 @@ export const useBoard = (args: useBoardArgs) => {
         Modal.error({ content: "요청에 문제가 있습니다" });
         return;
       }
+
       Modal.success({ content: "게시글 수정에 성공하셨습니다" });
       void router.push(`/boards/${updateResult.data?.updateBoard._id}`);
     } catch (error) {

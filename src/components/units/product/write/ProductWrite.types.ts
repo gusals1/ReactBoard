@@ -6,7 +6,6 @@ export interface IRegisterButtonProps {
 }
 
 export interface IProductWriteProps {
-  isEdit: boolean;
   data?: Pick<IQuery, "fetchUseditem">;
 }
 

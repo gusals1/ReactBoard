@@ -68,17 +68,6 @@ export const ImageWrapper = styled.div`
   margin-bottom: 40px;
 `;
 
-export const RadioButton = styled.input`
-  cursor: pointer;
-`;
-
-export const RadioLabel = styled.label`
-  margin-left: 8px;
-  margin-right: 20px;
-  font-weight: 500;
-  cursor: pointer;
-`;
-
 export const RegistButton = styled.button`
   display: block;
   width: 180px;

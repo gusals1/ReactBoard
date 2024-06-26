@@ -6,6 +6,9 @@ import type {
   IQueryFetchUseditemArgs,
 } from "../../../../src/commons/types/generated/types";
 import ProductWrite from "../../../../src/components/units/product/write/ProductWrite.index";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { isEditState } from "../../../../src/components/commons/store";
 
 export const FETCH_USEDITEM = gql`
   query fetchUseditem($useditemId: ID!) {
@@ -34,6 +37,9 @@ export default function ProductEdit(): JSX.Element {
   >(FETCH_USEDITEM, {
     variables: { useditemId: router.query.useditemId },
   });
-
-  return <ProductWrite isEdit={true} data={data} />;
+  const [, setIsEdit] = useRecoilState(isEditState);
+  useEffect(() => {
+    setIsEdit(true);
+  }, []);
+  return <ProductWrite data={data} />;
 }
