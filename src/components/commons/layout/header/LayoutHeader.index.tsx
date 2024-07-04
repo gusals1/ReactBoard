@@ -4,6 +4,7 @@ import { accessTokenState } from "../../store";
 import { useQueryFetchUserLoggedIn } from "../../hooks/queries/useQueryFetchUserLoggedIn";
 import { useMoveToPage } from "../../hooks/customs/useMoveToPage";
 import { useUserData } from "../../hooks/customs/useUserData";
+import PaymentButton from "../../payment/payment.index";
 
 export default function LayoutHeader(): JSX.Element {
   const { data } = useQueryFetchUserLoggedIn();
@@ -11,6 +12,9 @@ export default function LayoutHeader(): JSX.Element {
   const [accessToken] = useRecoilState(accessTokenState);
   const { onClickMoveToPage } = useMoveToPage();
   const { onClickLogout } = useUserData();
+  if (data?.fetchUserLoggedIn) {
+    console.log("point", data?.fetchUserLoggedIn.userPoint?.amount);
+  }
 
   return (
     <S.HeaderWrapper>
@@ -28,6 +32,7 @@ export default function LayoutHeader(): JSX.Element {
             </S.UserInfo>
             <S.ProfileMore src="/images/profile_more.png" alt="" />
             <S.LogoutBtn onClick={onClickLogout}>로그아웃</S.LogoutBtn>
+            <PaymentButton />
           </S.ProfileWrapper>
         ) : (
           <S.ProfileWrapper>

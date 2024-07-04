@@ -55,7 +55,7 @@ export const ProductImage = styled.img`
   margin: auto;
 `;
 
-export const ProductContents = styled.div`
+export const ProductContents = styled.p`
   margin-top: 80px;
 `;
 export const ProductTags = styled.p`
