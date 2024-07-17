@@ -1,4 +1,3 @@
-// import Head from "next/head";
 import * as S from "./payment.styles";
 import type {
   IMutation,
@@ -12,6 +11,7 @@ declare const window: typeof globalThis & {
   IMP: any;
 };
 
+// 포인트 충전 API
 const CREATE_POINT_TRANSACTION_OF_LOADING = gql`
   mutation createPointTransactionOfLoading($impUid: ID!) {
     createPointTransactionOfLoading(impUid: $impUid) {
@@ -22,6 +22,7 @@ const CREATE_POINT_TRANSACTION_OF_LOADING = gql`
 
 export default function PaymentButton(): JSX.Element {
   const client = useApolloClient();
+  // paymentButton이 그려질때 script 태그를 만들어서 추가
   useEffect(() => {
     const script = document.createElement("script");
 
@@ -31,22 +32,20 @@ export default function PaymentButton(): JSX.Element {
     document.body.appendChild(script);
 
     return () => {
-      // Clean up by removing the script when the component unmounts
+      // 컴포넌트가 unMounted 될때 제거해준다
       document.body.removeChild(script);
     };
   }, []);
 
   const onClickPayment = () => {
+    // 결제 연동
     const IMP = window.IMP;
-
-    IMP.init("imp49910675");
-
+    IMP.init("imp49910675"); // imp값은 백엔드에서 정해줌
     IMP.request_pay(
       {
         // param
         pg: "kakaopay",
         pay_method: "card",
-        // merchant_uid: "ORD20180131-0000011",
         name: "50000 포인트",
         amount: 50000,
         buyer_email: "c@c.com",
@@ -61,9 +60,7 @@ export default function PaymentButton(): JSX.Element {
         // callback
         if (rsp.success) {
           // 결제 성공 시 로직,
-          // 백엔드에 결제관련 데이터 날려주기 (mutation) ( graph ql )
-          // 백엔드에 결제관련 데이터 날려주기 (axios) (rest api)
-
+          // 백엔드에 결제관련 API 날려줌
           await client.mutate<
             Pick<IMutation, "createPointTransactionOfLoading">,
             IMutationCreatePointTransactionOfLoadingArgs

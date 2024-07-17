@@ -7,9 +7,9 @@ import { getAccessToken } from "../../../../commons/libraries/getAccessToken";
 
 export const useAuth = (): void => {
   const [accessToken] = useRecoilState(accessTokenState);
-  // const restoreAccessToken = useRecoilValueLoadable(restoreAccessTokenLodable);
   const router = useRouter();
 
+  // useAuth가 실행되고 accessToken이 없다면 오류를 발생시킨다
   useEffect(() => {
     void getAccessToken().then((newAccessToken) => {
       if (newAccessToken === undefined) {
@@ -18,16 +18,6 @@ export const useAuth = (): void => {
       }
     });
   }, [accessToken]);
-
-  // useEffect(() => {
-  //   void restoreAccessToken.toPromise().then((newAccessToken) => {
-  //     console.log("new", newAccessToken);
-  //     if (newAccessToken === undefined) {
-  //       Modal.error({ content: "로그인 후 이용해주세요" });
-  //       void router.push("/boards");
-  //     }
-  //   });
-  // }, []);
 };
 /*
   AccessToken 갱신 로직

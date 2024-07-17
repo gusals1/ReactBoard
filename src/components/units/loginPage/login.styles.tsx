@@ -53,8 +53,8 @@ export const LoginButton = styled.button`
 export const Contour = styled.div`
   width: 100%;
   height: 1px;
-  background-color: #000;
-  margin: 40px 0;
+  background-color: #ddd;
+  margin: 30px 0;
 `;
 
 export const Account = styled.p`

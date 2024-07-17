@@ -4,6 +4,7 @@ import type {
   IMutationCreateUseditemArgs,
 } from "../../../../commons/types/generated/types";
 
+// 상품 등록 mutation
 export const CREATE_USEDITEM = gql`
   mutation ($createUseditemInput: CreateUseditemInput!) {
     createUseditem(createUseditemInput: $createUseditemInput) {
@@ -11,7 +12,7 @@ export const CREATE_USEDITEM = gql`
     }
   }
 `;
-
+/** 상품 등록 hooks (함수) */
 export const useMutationCreateUseditem = () => {
   const mutation = useMutation<
     Pick<IMutation, "createUseditem">,

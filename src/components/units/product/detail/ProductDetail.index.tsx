@@ -13,7 +13,7 @@ export default function ProductDetail(): JSX.Element {
   `;
 
   const { id } = useCheckedId("useditemId");
-
+  // 상품 상세 조회 API
   const { data } = useQueryFetchUsedItem({ useditemId: id });
 
   return (

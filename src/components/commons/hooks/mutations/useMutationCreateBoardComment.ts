@@ -4,6 +4,7 @@ import type {
   IMutationCreateBoardCommentArgs,
 } from "../../../../commons/types/generated/types";
 
+// 댓글 등록 mutation
 export const CREATE_BOARD_COMMENTS = gql`
   mutation createBoardComment(
     $boardId: ID!
@@ -17,9 +18,8 @@ export const CREATE_BOARD_COMMENTS = gql`
     }
   }
 `;
-
+/** 댓글 등록 hooks(함수) */
 export const useMutationCreateBoardComment = () => {
-  // 댓글 등록
   const mutation = useMutation<
     Pick<IMutation, "createBoardComment">,
     IMutationCreateBoardCommentArgs

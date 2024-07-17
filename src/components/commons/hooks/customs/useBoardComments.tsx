@@ -6,13 +6,15 @@ import { Modal } from "antd";
 import { useMutationCreateBoardComment } from "../mutations/useMutationCreateBoardComment";
 import { useRouter } from "next/router";
 import { useMutationUpdateBoardComment } from "../mutations/useMutationUpdateBoardComment";
-// import { useMutationUpdateBoardComment } from "../mutations/useMutationUpdateBoardComment";
 
+// useBoardComment가 실행될때 인자로 받는 데이터의 타입 정의
 interface IBoardCommentArgs {
   boardId: string;
   boardCommentId?: string;
   toggleEdit?: () => void;
+  rating?: number;
 }
+// 댓글 수정시 필요한 객체의 타입
 interface IUpdateBoardCommentInput {
   contents?: string;
 }
@@ -25,6 +27,7 @@ export const useBoardComment = (args: IBoardCommentArgs) => {
   const [deleteBoardComment] = useMutationDeleteBoardComment();
 
   const [password, setPassword] = useState("");
+  /** 댓글 수정시에는 비밀번호가 필요하기 때문에 onChange로 비밀번호를 입력 받는다 */
   const onChangePassword = (e: ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
   };
@@ -72,7 +75,7 @@ export const useBoardComment = (args: IBoardCommentArgs) => {
             writer: data.writer,
             password: data.password,
             contents: data.contents,
-            rating: 4,
+            rating: args.rating ?? 0,
           },
         },
         refetchQueries: [
@@ -102,9 +105,6 @@ export const useBoardComment = (args: IBoardCommentArgs) => {
       const updateBoardCommentInput: IUpdateBoardCommentInput = {};
       if (data.contents !== "")
         updateBoardCommentInput.contents = data.contents;
-      // if (commentRating !== props.el.rating)
-      //   updateBoardCommentInput.rating = commentRating;
-
       if (!args.boardCommentId) return;
 
       await updateBoardComment({

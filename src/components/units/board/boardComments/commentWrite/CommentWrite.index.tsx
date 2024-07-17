@@ -1,33 +1,45 @@
 import { useForm } from "react-hook-form";
 import type { IBoardComment } from "../../../../../commons/types/generated/types";
 import { useBoardComment } from "../../../../commons/hooks/customs/useBoardComments";
-import { useCheckedId } from "../../../../commons/hooks/customs/useCheckedId";
 import * as S from "./CommentWrite.styles";
 import { Rate } from "antd";
+import { type ChangeEvent, useState } from "react";
 
+//
 interface ICommentWriteProps {
   isEdit?: boolean;
   toggleEdit?: () => void;
   el?: IBoardComment;
+  id?: string;
 }
 
 export default function CommentWrite(props: ICommentWriteProps): JSX.Element {
-  const { id } = useCheckedId("boardId");
-
+  // 별점 관리용 state
+  const [rating, setRating] = useState(0);
+  const [contentLength, setContentLength] = useState(0);
+  // 댓글 등록, 수정 mutation 댓글 등록시에는 boardId 수정시에는 commentId 사용
   const { onClickCommentRegister, onClickUpdateComment } = useBoardComment({
-    boardId: id,
+    boardId: props.id ?? "",
     boardCommentId: props.el?._id,
     toggleEdit: props.toggleEdit,
+    rating,
   });
 
+  // register로 데이터를 담아주고 등록 함수는 handleSubmit으로 감싸준다
   const { register, handleSubmit } = useForm({
+    // 기본값 설정 ( props.data가 있을때만)
     defaultValues: {
       writer: props.el?.writer ?? "",
       password: "",
       contents: props.el?.contents ?? "",
-      rating: 0,
+      rating: props.el?.rating ?? "",
     },
   });
+
+  /** content의 현재 글자 수를 표시하기 위한 onChange 함수 */
+  const onChangeContents = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    setContentLength(e.target.value.length);
+  };
 
   return (
     <S.Wrapper>
@@ -54,7 +66,7 @@ export default function CommentWrite(props: ICommentWriteProps): JSX.Element {
         <Rate
           allowHalf
           defaultValue={props.isEdit ? props.el?.rating : 0}
-          // {...register("rating")}
+          onChange={setRating}
         />
       </S.WriterInfo>
 
@@ -63,9 +75,10 @@ export default function CommentWrite(props: ICommentWriteProps): JSX.Element {
           maxLength={100}
           placeholder="개인정보를 공유 및 요청하거나, 명예 훼손, 무단 광고, 불법 정보 유포시 모니터링 후 삭제될 수 있으며, 이에 대한 민형사상 책임은 게시자에게 있습니다."
           {...register("contents")}
+          onChange={onChangeContents}
         ></S.CommentInput>
         <S.RegisterWrapper>
-          <S.CommentLength>0/100</S.CommentLength>
+          <S.CommentLength>{contentLength}/100</S.CommentLength>
           <S.CommentButton
             onClick={handleSubmit(
               props.isEdit ? onClickUpdateComment : onClickCommentRegister

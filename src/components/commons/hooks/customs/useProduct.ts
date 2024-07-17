@@ -8,13 +8,14 @@ import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
 import type { IUseditemForm } from "../../../units/product/write/ProductWrite.types";
 import { FETCH_USEDITEM } from "../queries/useQueryFetchUsedItem";
 
+// useProduct
 interface IUseProductArgs {
   useditemId?: string;
   setValue?: UseFormSetValue<IUseditemForm> | undefined;
   files?: File[];
   imageUrls?: string[];
 }
-
+// 상품 수정시 사용하는 객체의 데이터 타입
 interface IupdateUseditemInput {
   name?: string;
   remarks?: string;
@@ -32,9 +33,10 @@ export const useProduct = (args: IUseProductArgs) => {
   const [updateUseditem] = useMutationUpdateUseditem();
   const [deleteUseditem] = useMutationDeleteUseditem();
 
+  /** 상품 등록 함수 */
   const onClickUseditem = async (data: IUseditemForm): Promise<void> => {
     if (!args.files || !args.setValue) return;
-
+    // files에 들어온 이미지가 있으면 업로드한다
     const results = await Promise.all(
       args.files
         .filter((el) => el)
@@ -49,7 +51,7 @@ export const useProduct = (args: IUseProductArgs) => {
             name: data.name,
             remarks: data.remarks,
             contents: data.contents,
-            price: Number(data.price),
+            price: Number(data.price), // 가격은 number
             tags: data.tags,
             images: resultUrls,
           },
@@ -66,7 +68,7 @@ export const useProduct = (args: IUseProductArgs) => {
       if (error instanceof Error) Modal.error({ content: error.message });
     }
   };
-
+  /** 상품 수정하기 함수 */
   const onClickUpdateItem = async (data: any): Promise<void> => {
     if (!router || typeof router.query.useditemId !== "string") return;
     if (!args.files || !args.setValue || !data.images) return;
@@ -86,14 +88,17 @@ export const useProduct = (args: IUseProductArgs) => {
 
     let newIndex = 0; // 새 배열의 인덱스
 
-    // 기존 배열을 순회하면서 빈 공간을 새 배열의 값으로 채웁니다.
+    // uploadImage의 배열 길이 까지 반복
     for (let i = 0; i < uploadImages.length; i++) {
+      // uploadImage 배열이 빈 값이거나 newIndex의 값이 업로드한 이미지 개수보다 적으면 실행
       if (uploadImages[i] === undefined && newIndex < resultUpload.length) {
+        // uploadImage에 값이 있으면 실행 x 값이 없다면 업로드한 이미지를 배열에 넣어줌
         uploadImages[i] = resultUpload[newIndex];
         newIndex++;
       }
     }
-    // 새 배열의 값이 남아있는 경우, 기존 배열에 추가합니다.
+    // 반복문이 끝난 이후에도 resultUpload가 newIndex보다 작으면 아직 이미지가 남아있으므로
+    // 남은 이미지는 push해준다
     while (newIndex < resultUpload.length) {
       uploadImages.push(resultUpload[newIndex]);
       newIndex++;
@@ -131,6 +136,7 @@ export const useProduct = (args: IUseProductArgs) => {
     }
   };
 
+  /** 삭제 함수 */
   const onClickDeleteItem = async (): Promise<void> => {
     if (args.useditemId === undefined) return;
     try {

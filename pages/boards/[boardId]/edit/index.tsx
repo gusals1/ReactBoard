@@ -1,48 +1,26 @@
-import { gql, useQuery } from "@apollo/client";
-
-import { useRouter } from "next/router";
-import type {
-  IQuery,
-  IQueryFetchBoardArgs,
-} from "../../../../src/commons/types/generated/types";
 import BoardWrite from "../../../../src/components/units/board/write/BoardWrite.index";
 import { isEditState } from "../../../../src/components/commons/store";
 import { useRecoilState } from "recoil";
 import { useEffect } from "react";
-
-export const FETCH_BOARD = gql`
-  query fetchBoard($boardId: ID!) {
-    fetchBoard(boardId: $boardId) {
-      writer
-      title
-      contents
-      youtubeUrl
-      boardAddress {
-        zipcode
-        address
-        addressDetail
-      }
-      images
-    }
-  }
-`;
+import { useCheckedId } from "../../../../src/components/commons/hooks/customs/useCheckedId";
+import { useQueryFetchBoard } from "../../../../src/components/commons/hooks/queries/useQueryFetchBoard";
 
 export default function BoardEdit(): JSX.Element {
+  // 게시글 수정 페이지
+
+  /*  fetchBoard를 여기서 하는 이유
+      write와 edit는 하나의 컴포넌트에서 분기되는데 그럼 write할때도 fetch요청이 들어가 낭비가 발생함
+  */
   const [, setIsEdit] = useRecoilState(isEditState);
   useEffect(() => {
     setIsEdit(true);
   }, []);
 
-  const router = useRouter();
-  /*  fetchBoard를 여기서 하는 이유
-      write와 edit는 하나의 컴포넌트에서 분기되는데 그럼 write할때도 fetch요청이 들어가 낭비가 발생함
-      --> router.asPath를 이용해서 조건문으로 감지하면 writer페이지에서 편하게 보게 할 수 있을지도?
-  */
-  if (!router || typeof router.query.boardId !== "string") return <></>;
-  const { data } = useQuery<Pick<IQuery, "fetchBoard">, IQueryFetchBoardArgs>(
-    FETCH_BOARD,
-    { variables: { boardId: router.query.boardId } }
-  );
+  // 게시글 id값을 가져오는 함수
+  const { id } = useCheckedId("boardId");
+  // fetchBoard query를 재사용하기 위해 분리해놓은 함수
+  const { data } = useQueryFetchBoard({ boardId: id });
 
+  // boardWriter에는 fetchBoard한 결과값을 넘겨준다.
   return <BoardWrite data={data} />;
 }

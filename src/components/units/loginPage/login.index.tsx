@@ -8,10 +8,11 @@ export interface ILoginform {
   password: string;
 }
 export default function LoginPageUI(): JSX.Element {
-  // onClickLogin
+  // useUserData === 로그인 회원가입 API를 따로 분리해놓은 hooks
+  // useMoveToPage === 페이지 이동을 분리해놓은것 useRouter 사용
   const { onClickLogin } = useUserData();
   const { onClickMoveToPage } = useMoveToPage();
-
+  // useForm을 사용하는데 여기에 들어가는 데이터는 ILoginform이다
   const { register, handleSubmit } = useForm<ILoginform>();
 
   return (
@@ -30,7 +31,7 @@ export default function LoginPageUI(): JSX.Element {
         <S.LoginButton onClick={handleSubmit(onClickLogin)}>
           로그인
         </S.LoginButton>
-        <S.Contour></S.Contour>
+        <S.Contour />
         <S.Account>
           계정이 없으신가요? &nbsp;
           <S.SignUp onClick={onClickMoveToPage("/signup")}>가입하기</S.SignUp>

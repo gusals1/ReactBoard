@@ -5,8 +5,8 @@ import * as S from "./BoardDetailFooter.styles";
 
 export default function BoardDetailFooter() {
   const { id } = useCheckedId("boardId");
-  const { onClickMoveToPage } = useMoveToPage();
-  const { onClickDelete } = useBoard({ boardId: id });
+  const { onClickMoveToPage } = useMoveToPage(); // 페이지 이동 함수를 가져와서 사용(hooks로 분리 시켜놓음)
+  const { onClickDelete } = useBoard({ boardId: id }); // useBoard에서 삭제 api만 가져옴
 
   return (
     <>

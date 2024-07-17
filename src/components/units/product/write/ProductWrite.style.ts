@@ -77,6 +77,7 @@ export const RegistButton = styled.button`
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+  background-color: #ffd600;
 `;
 
 export const webEditor = {

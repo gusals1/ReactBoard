@@ -2,8 +2,6 @@ import type { IproductDetailHeaderProps } from "../ProductDetailHeader/ProductDe
 import * as S from "./ProductDetailBody.styles";
 
 export default function ProductDetailBody(props: IproductDetailHeaderProps) {
-  // like dislike api 가져와야함.
-
   return (
     <>
       <S.Body>

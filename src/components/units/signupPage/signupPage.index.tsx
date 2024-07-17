@@ -9,8 +9,9 @@ export interface ISignupForm {
 }
 
 export default function SignUpPage(): JSX.Element {
+  // useUserData === 로그인 회원가입 API hooks
   const { onClickSignUp } = useUserData();
-
+  // useForm으로 데이터 전송
   const { register, handleSubmit } = useForm<ISignupForm>();
 
   return (

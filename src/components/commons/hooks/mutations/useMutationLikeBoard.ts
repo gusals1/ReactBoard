@@ -4,14 +4,14 @@ import type {
   IMutationLikeBoardArgs,
 } from "../../../../commons/types/generated/types";
 
-// 좋아요 mutaion
+// 좋아요 API
 export const LIKE_BOARD = gql`
   mutation ($boardId: ID!) {
     likeBoard(boardId: $boardId)
   }
 `;
+// 게시글 좋아요 hooks (함수)
 export const useMutationLikeBoard = () => {
-  // 게시글 좋아요 mutation
   const mutation = useMutation<
     Pick<IMutation, "likeBoard">,
     IMutationLikeBoardArgs

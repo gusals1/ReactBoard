@@ -10,6 +10,7 @@ import type {
 import { Modal } from "antd";
 import { useRouter } from "next/router";
 
+// 포인트로 상품 구매하는 API문
 export const CREATE_POINT_TRANSACTION_OF_BUYING_AND_SELLING = gql`
   mutation createPointTransactionOfBuyingAndSelling($useritemId: ID!) {
     createPointTransactionOfBuyingAndSelling(useritemId: $useritemId) {
@@ -24,13 +25,14 @@ export default function ProductDetailFooter(): JSX.Element {
   const { id } = useCheckedId("useditemId");
 
   const { onClickDeleteItem } = useProduct({ useditemId: id });
-
+  // 상품 구매 API useMutation으로 사용
   const [createPointTransactionOfBuyingAndSelling] = useMutation<
     Pick<IMutation, "createPointTransactionOfBuyingAndSelling">,
     IMutationCreatePointTransactionOfBuyingAndSellingArgs
   >(CREATE_POINT_TRANSACTION_OF_BUYING_AND_SELLING);
 
   const onClickBuy = async () => {
+    // 상품 구매할때 id값을 주고 성공 실패에 따라 Modal 띄워주기
     try {
       await createPointTransactionOfBuyingAndSelling({
         variables: {
@@ -41,7 +43,7 @@ export default function ProductDetailFooter(): JSX.Element {
       Modal.success({ content: "구매했습니다" });
       void router.push("/shop");
     } catch (error) {
-      if (error instanceof Error) Modal.error({ content: error.message });
+      Modal.error({ content: "오류가 발생했습니다" });
     }
   };
   return (

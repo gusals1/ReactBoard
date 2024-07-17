@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import type { MatchKeywordProps } from "./ProductList.types";
 
 export const Wrapper = styled.div`
   max-width: 1200px;
@@ -48,7 +47,7 @@ export const SubTitle = styled.p`
   font-size: 12px;
   color: #4f4f4f;
 `;
-export const WriterInfo = styled.div`
+export const ProductInfo = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -218,10 +217,4 @@ export const RegisterButton = styled.button`
     border: #35c5f0;
     transition: all 0.1s ease;
   }
-`;
-
-export const MatchKeyword = styled.span`
-  background: ${(props: MatchKeywordProps) =>
-    props.isMatch ? "#85dfff" : "none"};
-  color: ${(props: MatchKeywordProps) => (props.isMatch ? "#fff" : "none")};
 `;

@@ -11,8 +11,8 @@ export const DISLIKE_BOARD = gql`
   }
 `;
 
+/** 싫어요 hooks (함수) */
 export const useMutationDislikeBoard = () => {
-  // 게시글 싫어요 mutation
   const mutation = useMutation<
     Pick<IMutation, "dislikeBoard">,
     IMutationDislikeBoardArgs

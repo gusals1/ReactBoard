@@ -4,6 +4,7 @@ import type {
   IQueryFetchBoardCommentsArgs,
 } from "../../../../commons/types/generated/types";
 
+// 댓글 조회 API
 export const FETCH_BOARD_COMMENTS = gql`
   query fetchBoardComments($boardId: ID!, $page: Int) {
     fetchBoardComments(boardId: $boardId, page: $page) {

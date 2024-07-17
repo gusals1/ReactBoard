@@ -1,7 +1,11 @@
 import { Tooltip } from "antd";
 import * as S from "./ProductDetailHeader.styles";
 import { getDate } from "../../../../../commons/libraries/util";
-import type { IproductDetailHeaderProps } from "./ProductDetailHeader.types";
+import type { IQuery } from "../../../../../commons/types/generated/types";
+
+interface IproductDetailHeaderProps {
+  data: Pick<IQuery, "fetchUseditem"> | undefined;
+}
 
 export default function ProductDetailHeader(
   props: IproductDetailHeaderProps

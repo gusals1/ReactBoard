@@ -21,8 +21,8 @@ export const UPDATE_BOARD = gql`
   }
 `;
 
+/** 게시글 수정 hooks (함수) */
 export const useMutationUpdateBoard = () => {
-  // 게시글 수정 mutation
   const mutation = useMutation<
     Pick<IMutation, "updateBoard">,
     IMutationUpdateBoardArgs

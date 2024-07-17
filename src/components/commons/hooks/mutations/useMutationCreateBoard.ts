@@ -13,8 +13,8 @@ export const CREATE_BOARD = gql`
   }
 `;
 
+/** 게시글 등록 hooks (함수) */
 export const useMutationCreateBoard = () => {
-  // 게시글 작성 mutation
   const mutation = useMutation<
     Pick<IMutation, "createBoard">,
     IMutationCreateBoardArgs

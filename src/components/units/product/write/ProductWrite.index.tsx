@@ -10,15 +10,21 @@ import { isEditState } from "../../../commons/store";
 import { useRecoilState } from "recoil";
 
 export default function ProductWrite(props: IProductWriteProps): JSX.Element {
+  // 상품 등록, 수정 분기할때 사용하는 global state
   const [isEdit] = useRecoilState(isEditState);
+
   const { id } = useCheckedId("useditemId");
+  // files => input type = files로 받은 이미지를 저장하는 state
   const [files, setFiles] = useState<File[]>([]);
+  // 임시 URL값을 저장하는 state
   const [imageUrls, setImageUrls] = useState(["", "", ""]);
 
+  // setValue === useForm에 강제로 데이터를 넣어줄때 사용
   const { register, handleSubmit, setValue } = useForm<IUseditemForm>({
     mode: "onChange",
   });
 
+  // useProduct ==> 상품 등록에 관한 API hooks
   const { onClickUseditem, onClickUpdateItem } = useProduct({
     useditemId: id,
     setValue,
@@ -26,6 +32,7 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
     imageUrls,
   });
 
+  // 브라우저가 처음 그려질때 props.data가 있다면 그 값을 useForm 값에 넣어준다(수정할 데이터를 불러오기 위해서)
   useEffect(() => {
     if (props.data) {
       setValue("name", props.data.fetchUseditem.name ?? "");
@@ -58,18 +65,18 @@ export default function ProductWrite(props: IProductWriteProps): JSX.Element {
   ): Promise<void> => {
     // file값은 url값 index는 해당하는 number값.
     try {
-      const tempUrls = [...imageUrls];
-      tempUrls[index] = imageUrl;
-      setImageUrls(tempUrls);
+      const tempUrls = [...imageUrls]; // 빈 state를 복사
+      tempUrls[index] = imageUrl; // 복사한 배열에 index에 url값을 저장
+      setImageUrls(tempUrls); // 그 값을 다시 imageUrl state에 저장
 
-      const tempFiles = [...files];
-      tempFiles[index] = file;
+      const tempFiles = [...files]; // 빈 File타입 배열 복사
+      tempFiles[index] = file; // 복사한 배열에 input files로 받아온 파일 데이터 저장
       await new Promise((resolve) => {
-        setFiles(tempFiles);
+        setFiles(tempFiles); // 이 위에 요청이 다 완료되면 upload할 파일을 file state에 저장
         resolve(true);
       });
     } catch (error) {
-      if (error instanceof Error) alert(error.message);
+      if (error instanceof Error) alert(error.message); // 에러처리
     }
   };
   // ------------------------------------------------------------------------------

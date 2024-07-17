@@ -7,14 +7,19 @@ import { useUserData } from "../../hooks/customs/useUserData";
 import PaymentButton from "../../payment/payment.index";
 
 export default function LayoutHeader(): JSX.Element {
+  // 유저 데이터를 조회 API
   const { data } = useQueryFetchUserLoggedIn();
-
+  // 로그인 시에 저장되는 accessToken global state
   const [accessToken] = useRecoilState(accessTokenState);
+  // 페이지 이동 API
   const { onClickMoveToPage } = useMoveToPage();
+  // 로그아웃 API
   const { onClickLogout } = useUserData();
-  if (data?.fetchUserLoggedIn) {
-    console.log("point", data?.fetchUserLoggedIn.userPoint?.amount);
-  }
+
+  // 유저에게 포인트가 있는지 확인해보는용
+  // if (data?.fetchUserLoggedIn) {
+  //   console.log("point", data?.fetchUserLoggedIn.userPoint?.amount);
+  // }
 
   return (
     <S.HeaderWrapper>
@@ -32,6 +37,7 @@ export default function LayoutHeader(): JSX.Element {
             </S.UserInfo>
             <S.ProfileMore src="/images/profile_more.png" alt="" />
             <S.LogoutBtn onClick={onClickLogout}>로그아웃</S.LogoutBtn>
+            {/* 충전하기 버튼 */}
             <PaymentButton />
           </S.ProfileWrapper>
         ) : (

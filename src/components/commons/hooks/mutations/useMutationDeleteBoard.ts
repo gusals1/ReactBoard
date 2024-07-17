@@ -11,8 +11,8 @@ export const DELETE_BOARD = gql`
   }
 `;
 
+/** 게시글 삭제 hooks (함수) */
 export const useMutationDeleteBoard = () => {
-  // 삭제 mutation
   const mutation = useMutation<
     Pick<IMutation, "deleteBoard">,
     IMutationDeleteBoardArgs

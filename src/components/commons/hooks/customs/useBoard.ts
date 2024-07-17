@@ -10,17 +10,20 @@ import _ from "lodash";
 import { FETCH_BOARD } from "../queries/useQueryFetchBoard";
 import { useMutationUploadFile } from "../mutations/useMutationUploadFile";
 import type { UseFormSetValue } from "react-hook-form";
-
+// useBoard의 타입
 interface useBoardArgs {
   boardId?: string;
   setValue?: UseFormSetValue<Iform> | undefined;
   files?: File[];
   imageUrls?: string[];
 }
+
+// deleteBoard의 prev 타입
 interface IPrev {
   __ref: string;
 }
 
+// update할때 사용할 배열 데이터의 타입
 interface IUpdateBoardInput {
   title?: string;
   contents?: string;
@@ -34,34 +37,42 @@ interface IUpdateBoardInput {
 }
 
 export const useBoard = (args: useBoardArgs) => {
-  const uploadImages: string[] = [];
+  const uploadImages: string[] = []; // 이미지 업데이트에 필요한 배열 선언
   const router = useRouter();
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(""); // 비밀번호 state
 
-  const [uploadFile] = useMutationUploadFile();
-  const [createBoard] = useMutationCreateBoard();
-  const [updateBoard] = useMutationUpdateBoard();
-  const [deleteBoard] = useMutationDeleteBoard();
+  const [uploadFile] = useMutationUploadFile(); // 이미지 업로드 함수 가져오기
+  const [createBoard] = useMutationCreateBoard(); // 게시글 등록 함수 가져오기
+  const [updateBoard] = useMutationUpdateBoard(); // 게시글 수정 함수 가져오기
+  const [deleteBoard] = useMutationDeleteBoard(); // 게시글 삭제 함수 가져오기
 
+  /** 0.5초 뒤에 value 값을 읽어와서 password state에 담는 함수 */
   const getDebounce = _.debounce((value: string) => {
     setPassword(value);
   }, 500);
 
+  /** change 이벤트가 발생하면 getDebounce를 실행시킨다 */
   const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     getDebounce(e.target.value);
   };
 
+  /** 게시글 등록 버튼을 누르면 실행되는 함수
+   *  data는 게시글 등록 페이지에서 setValue, register를 통해 전송받는다.
+   */
   const onClickWrite = async (data: Iform): Promise<void> => {
     if (!args.files || !args.setValue || !data.boardAddress) return;
+    // setValue를 인자로 받아서 useForm의 images에 값을 넣어준다
     args.setValue("images", args.files);
-
+    // 만약 images가 없다면 그냥 빈 배열을 할당해준다
     if (!data.images) data.images = ["", "", ""];
 
     const results = await Promise.all(
+      // data.images(setValue된 값)을 map으로 순회시켜 이미지 파일이 있을때만 upload한다
       data.images
         .filter((el) => el)
         .map(async (el) => await uploadFile({ variables: { file: el } }))
     );
+    // 이미지 업로드한 결과를 저장
     const resultUrls = results.map((el) => el.data?.uploadFile.url ?? "");
     try {
       const result = await createBoard({
@@ -81,6 +92,7 @@ export const useBoard = (args: useBoardArgs) => {
             images: resultUrls,
           },
         },
+        // api 요청이 날아간 후에 캐시를 직접 수정해서 데이터를 업데이트 해준다.
         update(cache, { data }) {
           cache.modify({
             fields: {
@@ -109,6 +121,7 @@ export const useBoard = (args: useBoardArgs) => {
     try {
       await deleteBoard({
         variables: { boardId: args.boardId },
+        // api 요청이 날아가면 캐시 수정을 통해 삭제하고 값을 업데이트 해준다.
         update(cache, { data }) {
           cache.modify({
             fields: {
@@ -135,12 +148,15 @@ export const useBoard = (args: useBoardArgs) => {
     if (!args.files || !args.setValue || !data.images) return;
     if (!data.boardAddress) return;
     if (!router || typeof router.query.boardId !== "string") return;
+    // files로 들어온 이미지를 useForm images에 넣어준다.
     args.setValue("images", args.files);
 
+    // imageUrl에 codecamp 문자열이 들어있으면 미리 만들어놓은 uploadImage에 넣어준다.
     args.imageUrls?.forEach((el, index) => {
       if (el.includes("codecamp")) uploadImages[index] = el;
     });
 
+    // files에 들어온 이미지들을 업로드 한다.
     const results = await Promise.all(
       args.files
         .filter((el) => el)
@@ -150,14 +166,17 @@ export const useBoard = (args: useBoardArgs) => {
 
     let newIndex = 0; // 새 배열의 인덱스
 
-    // 기존 배열을 순회하면서 빈 공간을 새 배열의 값으로 채웁니다.
+    // uploadImage의 배열 길이 까지 반복
     for (let i = 0; i < uploadImages.length; i++) {
+      // uploadImage 배열이 빈 값이거나 newIndex의 값이 업로드한 이미지 개수보다 적으면 실행
       if (uploadImages[i] === undefined && newIndex < resultUpload.length) {
+        // uploadImage에 값이 있으면 실행 x 값이 없다면 업로드한 이미지를 배열에 넣어줌
         uploadImages[i] = resultUpload[newIndex];
         newIndex++;
       }
     }
-    // 새 배열의 값이 남아있는 경우, 기존 배열에 추가합니다.
+    // 반복문이 끝난 이후에도 resultUpload가 newIndex보다 작으면 아직 이미지가 남아있으므로
+    // 남은 이미지는 push해준다
     while (newIndex < resultUpload.length) {
       uploadImages.push(resultUpload[newIndex]);
       newIndex++;
@@ -192,6 +211,7 @@ export const useBoard = (args: useBoardArgs) => {
           password,
           updateBoardInput,
         },
+        // 데이터를 업데이트하면 다시 fetch 요청을 보내서 데이터를 업데이트 해준다
         refetchQueries: [
           {
             query: FETCH_BOARD,

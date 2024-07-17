@@ -5,15 +5,18 @@ import { type ChangeEvent, useState, useEffect } from "react";
 
 export default function ProductList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
-
+  // 상품 판매여부를 판별하기 위한 state
   const [soldOut, setSoldout] = useState(false);
-  const { data, refetch } = useQueryFetchUsedItems({ isSoldout: soldOut });
-  // const secretKey = "!#@!@$";
 
+  // 상품 데이터를 fetch 할때는 isSoldout의 값을 가지고 조회함 // 판매중: false, 판매완료: true
+  const { data, refetch } = useQueryFetchUsedItems({ isSoldout: soldOut });
+
+  // 탭 메뉴 클릭에 따라서 값을 바꿔준다 => tab2가 클릭되면 true 아니면 false
   const onChangeSoldout = (e: ChangeEvent<HTMLInputElement>) => {
     setSoldout(e.target.value === "tab2");
   };
 
+  // soldOut이 변경되거나 refetch의 상태가 변경되면 soldOut를 반영해서 refetch한다
   useEffect(() => {
     void refetch({ isSoldout: soldOut });
   }, [soldOut, refetch]);
@@ -28,18 +31,18 @@ export default function ProductList(): JSX.Element {
             <S.BestBox>
               <S.MainTitle>삼성전자 갤럭시 탭</S.MainTitle>
               <S.SubTitle>2019 LTE 32GB</S.SubTitle>
-              <S.WriterInfo>
+              <S.ProductInfo>
                 <S.BestPrice>240,120원</S.BestPrice>
                 <S.LikeWrapper>
                   <S.Good src="./images/icon_good.png" />
                   <S.LikeCount>234</S.LikeCount>
                 </S.LikeWrapper>
-              </S.WriterInfo>
+              </S.ProductInfo>
             </S.BestBox>
           </S.PostCard>
         ))}
       </S.TopBox>
-      {/* 제목, 날짜, 검색버튼 */}
+      {/* 탭 메뉴 */}
       <S.TableTop>
         <S.SalesWrapper>
           <S.Sale>
@@ -66,7 +69,7 @@ export default function ProductList(): JSX.Element {
           </S.Sale>
         </S.SalesWrapper>
       </S.TableTop>
-      {/* 게시글 목록 */}
+      {/* 상품 목록 */}
       <S.Table>
         {/* fetchBoard의 결과를 map으로 뿌려줌 */}
         {data?.fetchUseditems.map((el) => (
@@ -76,6 +79,7 @@ export default function ProductList(): JSX.Element {
           >
             <S.ProdImage
               src={
+                // 첫번째 이미지만 대표 이미지로 보여줌 없으면 X
                 el.images
                   ? `https://storage.googleapis.com/${el.images[0]}`
                   : ""

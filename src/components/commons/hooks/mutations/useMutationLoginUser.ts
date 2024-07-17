@@ -4,6 +4,7 @@ import type {
   IMutationLoginUserArgs,
 } from "../../../../commons/types/generated/types";
 
+// 로그인 API
 export const LOGIN_USER = gql`
   mutation loginUser($email: String!, $password: String!) {
     loginUser(email: $email, password: $password) {
@@ -11,7 +12,7 @@ export const LOGIN_USER = gql`
     }
   }
 `;
-
+/** 로그인 hooks (함수) */
 export const useMutationLoginUser = () => {
   const mutation = useMutation<
     Pick<IMutation, "loginUser">,

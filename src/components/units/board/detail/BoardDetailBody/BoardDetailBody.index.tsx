@@ -4,15 +4,14 @@ import type { IBoardDetailHeaderProps } from "../BoardDetailHeader/BoardDetailHe
 import * as S from "./BoardDetailBody.styles";
 
 export default function BoardDetailBody(props: IBoardDetailHeaderProps) {
-  // like dislike api 가져와야함.
   const { id } = useCheckedId("boardId");
-  const { onClickLike, onClickDislike } = useLikeCount({ boardId: id });
+  const { onClickLike, onClickDislike } = useLikeCount({ boardId: id }); // 좋아요 싫어요 api
   return (
     <>
       <S.Body>
         <S.BoardTitle>{props.data?.fetchBoard?.title}</S.BoardTitle>
         <S.BoardImageWrapper>
-          {props.data?.fetchBoard?.images
+          {props.data?.fetchBoard?.images // fetchBoard한 데이터 중에 이미지가 있다면 찾아서 화면에 보여줌
             ?.filter((el) => el)
             .map((el, index) => (
               <S.BoardImage
@@ -24,7 +23,7 @@ export default function BoardDetailBody(props: IBoardDetailHeaderProps) {
         </S.BoardImageWrapper>
         <S.BoardContents>{props.data?.fetchBoard?.contents}</S.BoardContents>
         <S.YoutubeWrapper>
-          {props.data?.fetchBoard.youtubeUrl !== "" && (
+          {props.data?.fetchBoard.youtubeUrl !== "" && ( // youtubeUrl이 있다면 youtubePlayer를 보여줌
             <S.BoardYoutubePlayer
               url={props.data?.fetchBoard?.youtubeUrl ?? ""}
               width={486}

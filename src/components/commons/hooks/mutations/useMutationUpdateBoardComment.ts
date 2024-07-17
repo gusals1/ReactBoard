@@ -4,6 +4,7 @@ import type {
   IMutationUpdateBoardCommentArgs,
 } from "../../../../commons/types/generated/types";
 
+// 댓글 수정 API
 export const UPDATE_BOARD_COMMENT = gql`
   mutation upDateBoardComment(
     $updateBoardCommentInput: UpdateBoardCommentInput!
@@ -20,8 +21,8 @@ export const UPDATE_BOARD_COMMENT = gql`
   }
 `;
 
+/** 댓글 수정 hooks (함수) */
 export const useMutationUpdateBoardComment = () => {
-  // 댓글 수정
   const mutation = useMutation<
     Pick<IMutation, "updateBoardComment">,
     IMutationUpdateBoardCommentArgs

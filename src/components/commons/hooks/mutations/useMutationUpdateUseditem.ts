@@ -4,6 +4,7 @@ import type {
   IMutationUpdateUseditemArgs,
 } from "../../../../commons/types/generated/types";
 
+// 상품 수정 API
 export const UPDATE_USEDITEM = gql`
   mutation ($updateUseditemInput: UpdateUseditemInput!, $useditemId: ID!) {
     updateUseditem(
@@ -15,6 +16,7 @@ export const UPDATE_USEDITEM = gql`
   }
 `;
 
+/** 상품 수정 hooks (함수) */
 export const useMutationUpdateUseditem = () => {
   const mutation = useMutation<
     Pick<IMutation, "updateUseditem">,

@@ -4,6 +4,7 @@ import type {
   IMutationUploadFileArgs,
 } from "../../../../commons/types/generated/types";
 
+// 이미지 업로드 API
 export const UPLOAD_FILE = gql`
   mutation uploadFile($file: Upload!) {
     uploadFile(file: $file) {
@@ -12,6 +13,7 @@ export const UPLOAD_FILE = gql`
   }
 `;
 
+// 이미지 업로드 hooks(함수)
 export const useMutationUploadFile = () => {
   const mutation = useMutation<
     Pick<IMutation, "uploadFile">,

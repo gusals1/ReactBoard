@@ -19,7 +19,7 @@ export default function BoardDetailHeader(props: IBoardDetailHeaderProps) {
         </S.ProfileWrapper>
         <S.IconWrapper>
           <S.Clip src="/images/clip.png" />
-          <Tooltip
+          <Tooltip // ant design 라이브러리에서 제공하는 툴팁 title에 주소를 보여주기 위해 사용
             placement="topRight"
             title={`${props.data?.fetchBoard.boardAddress?.address ?? ""} ${
               props.data?.fetchBoard.boardAddress?.addressDetail ?? ""
