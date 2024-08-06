@@ -2,6 +2,7 @@ import * as S from "./ProductList.style";
 import { useMoveToPage } from "../../../commons/hooks/customs/useMoveToPage";
 import { useQueryFetchUsedItems } from "../../../commons/hooks/queries/useQueryFetchUsedItems";
 import { type ChangeEvent, useState, useEffect } from "react";
+import { BestProduct } from "./BestProduct";
 
 export default function ProductList(): JSX.Element {
   const { onClickMoveToPage } = useMoveToPage();
@@ -25,16 +26,17 @@ export default function ProductList(): JSX.Element {
     <S.Wrapper>
       <S.Title>베스트 상품</S.Title>
       <S.TopBox>
-        {new Array(4).fill(1).map((_, index) => (
+        {BestProduct.map((el, index) => (
           <S.PostCard key={index}>
-            <S.Image src="/images/best_post1.png" />
+            <S.Image src={el.image} />
+            <S.Line></S.Line>
             <S.BestBox>
-              <S.MainTitle>삼성전자 갤럭시 탭</S.MainTitle>
-              <S.SubTitle>2019 LTE 32GB</S.SubTitle>
+              <S.MainTitle>{el.title}</S.MainTitle>
+              <S.SubTitle>{el.name}</S.SubTitle>
               <S.ProductInfo>
-                <S.BestPrice>240,120원</S.BestPrice>
+                <S.BestPrice>{el.price}원</S.BestPrice>
                 <S.LikeWrapper>
-                  <S.Good src="./images/icon_good.png" />
+                  <S.Good src="/images/icon_good.png" />
                   <S.LikeCount>234</S.LikeCount>
                 </S.LikeWrapper>
               </S.ProductInfo>

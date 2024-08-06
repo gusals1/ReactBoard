@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { useAuth } from "../../../src/components/commons/hooks/customs/useAuth";
+// import { useAuth } from "../../../src/components/commons/hooks/customs/useAuth";
 import BoardWrite from "../../../src/components/units/board/write/BoardWrite.index";
 import { isEditState } from "../../../src/components/commons/store";
 import { useEffect } from "react";
@@ -14,6 +14,6 @@ export default function BoardNewPage(): JSX.Element {
   }, []);
 
   // 글쓰기 페이지는 권한이 필요하기 때문에 useAuth를 실행
-  useAuth();
+  // useAuth();
   return <BoardWrite />;
 }

@@ -16,22 +16,29 @@ export const Title = styled.h1`
 `;
 
 export const TopBox = styled.div`
-  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   gap: 20px;
 `;
 export const PostCard = styled.div`
+  width: 25%;
   margin: 60px 0 30px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0px 0px 8px #999999;
 `;
+export const Line = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
+`;
 export const Image = styled.img`
   display: block;
-  max-width: 100%;
-  min-height: 242px;
+  margin: auto;
+  /* max-width: 290px; */
+  height: 250px;
 `;
 export const BestBox = styled.div`
   max-width: 100%;

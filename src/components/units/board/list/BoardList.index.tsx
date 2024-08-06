@@ -8,6 +8,7 @@ import { useQueryFetchBoardsCount } from "../../../commons/hooks/queries/useQuer
 import { useSearch } from "../../../commons/hooks/customs/useSearch";
 import Pagenation01 from "../../../commons/pagenation/pagenation.index";
 import SearchBar from "../../../commons/searchbar/searchBar.index";
+import { Best } from "./Best";
 
 export default function BoardList(): JSX.Element {
   // router.push('/경로')를 hooks로 만들어 놓음
@@ -33,22 +34,22 @@ export default function BoardList(): JSX.Element {
     <S.Wrapper>
       <S.Title>베스트 게시글</S.Title>
       <S.TopBox>
-        {/* 베스트 게시글 영역 */}
-        {new Array(4).fill(1).map((_, index) => (
+        {/* 베스트 게시글 영역 (임시 json 데이터 사용 api가 없어서 */}
+        {Best.map((el, index) => (
           <S.PostCard key={index}>
-            <S.Image src="/images/best_post1.png" />
+            <S.Image src={el.image} />
             <S.TextBox>
-              <S.PostTitleBest>게시글 제목입니다</S.PostTitleBest>
+              <S.PostTitleBest>{el.title}</S.PostTitleBest>
               <S.WriterInfo>
                 <S.Profile>
                   <S.IconProfile src="/images/avatar.png" />
-                  <S.ProfileName>박현민</S.ProfileName>
+                  <S.ProfileName>{el.name}</S.ProfileName>
                 </S.Profile>
-                <S.Good src="./images/icon_good.png" />
+                <S.Good src="/images/icon_good.png" />
               </S.WriterInfo>
               <S.WriterInfo>
-                <S.Dates>Date : 2023.11.09</S.Dates>
-                <S.NumberLike>234</S.NumberLike>
+                <S.Dates>Date : {el.date}</S.Dates>
+                <S.NumberLike>{el.like}</S.NumberLike>
               </S.WriterInfo>
             </S.TextBox>
           </S.PostCard>

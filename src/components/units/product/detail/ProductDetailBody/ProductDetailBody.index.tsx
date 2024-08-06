@@ -1,5 +1,9 @@
-import type { IproductDetailHeaderProps } from "../ProductDetailHeader/ProductDetailHeader.types";
+import type { IQuery } from "../../../../../commons/types/generated/types";
 import * as S from "./ProductDetailBody.styles";
+
+interface IproductDetailHeaderProps {
+  data: Pick<IQuery, "fetchUseditem"> | undefined;
+}
 
 export default function ProductDetailBody(props: IproductDetailHeaderProps) {
   return (

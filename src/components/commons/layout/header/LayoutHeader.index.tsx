@@ -27,7 +27,7 @@ export default function LayoutHeader(): JSX.Element {
         <S.Logo
           src="/images/logo.png"
           alt=""
-          onClick={onClickMoveToPage("/boards")}
+          onClick={onClickMoveToPage("/")}
         />
         {accessToken !== "" ? (
           <S.ProfileWrapper>
