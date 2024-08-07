@@ -13,6 +13,7 @@ export default function Layout(props: ILayoutProps): JSX.Element {
   const router = useRouter();
   const LayoutMain = styled.div`
     margin: auto;
+    padding: 20px;
   `;
   // 로그인 회원가입 페이지에서는 메인만 보여주기 때문에 경로에 따라 안보이게 변경해줌
   let isHidden = false;

@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 
 export const BannerWrapper = styled.div`
-  display: block;
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto -5px;
   height: auto;
 `;
 
-export const Banner = styled.div``;
+export const Banner = styled.div`
+  width: 100%;
+`;
