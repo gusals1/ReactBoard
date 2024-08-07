@@ -2,12 +2,12 @@
 
 FROM node:14
 
-COPY ./package.json /myfolder/
-COPY ./yarn.lock /myfolder/
+COPY ./package.json /my-app/
+COPY ./yarn.lock /my-app/
+WORKDIR /my-app/
 RUN yarn install
-WORKDIR /myfolder/
 
-COPY . /myfolder/
+COPY . /my-app/
 RUN yarn build
 
 CMD yarn start
