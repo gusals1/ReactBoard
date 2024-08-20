@@ -99,7 +99,7 @@ export default function ProductList(): JSX.Element {
             </S.ProdInfo>
 
             <S.ProdPrice>
-              <S.IconDollar src="./images/icon_dollar.png" alt="" />
+              <S.IconDollar src="/images/icon_dollar.png" alt="" />
               <S.Price>{el.price}원</S.Price>
             </S.ProdPrice>
           </S.TableRow>

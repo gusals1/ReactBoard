@@ -4,6 +4,8 @@ import { useBoardComment } from "../../../../commons/hooks/customs/useBoardComme
 import * as S from "./CommentWrite.styles";
 import { Rate } from "antd";
 import { type ChangeEvent, useState } from "react";
+import { useRecoilState } from "recoil";
+import { ratingState } from "../../../../commons/store";
 
 //
 interface ICommentWriteProps {
@@ -15,18 +17,12 @@ interface ICommentWriteProps {
 
 export default function CommentWrite(props: ICommentWriteProps): JSX.Element {
   // 별점 관리용 state
-  const [rating, setRating] = useState(0);
+  const [, setRating] = useRecoilState(ratingState);
   const [contentLength, setContentLength] = useState(0);
   // 댓글 등록, 수정 mutation 댓글 등록시에는 boardId 수정시에는 commentId 사용
-  const { onClickCommentRegister, onClickUpdateComment } = useBoardComment({
-    boardId: props.id ?? "",
-    boardCommentId: props.el?._id,
-    toggleEdit: props.toggleEdit,
-    rating,
-  });
 
   // register로 데이터를 담아주고 등록 함수는 handleSubmit으로 감싸준다
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     // 기본값 설정 ( props.data가 있을때만)
     defaultValues: {
       writer: props.el?.writer ?? "",
@@ -34,6 +30,13 @@ export default function CommentWrite(props: ICommentWriteProps): JSX.Element {
       contents: props.el?.contents ?? "",
       rating: props.el?.rating ?? "",
     },
+  });
+
+  const { onClickCommentRegister, onClickUpdateComment } = useBoardComment({
+    boardId: props.id ?? "",
+    boardCommentId: props.el?._id,
+    toggleEdit: props.toggleEdit,
+    reset,
   });
 
   /** content의 현재 글자 수를 표시하기 위한 onChange 함수 */

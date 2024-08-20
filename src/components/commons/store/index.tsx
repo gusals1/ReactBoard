@@ -8,6 +8,11 @@ export const isEditState = atom({
   default: false,
 });
 
+export const ratingState = atom({
+  key: "ratingstate",
+  default: 0,
+});
+
 // 로그인 시 accessToken을 담는 state
 export const accessTokenState = atom({
   key: "accessTokenState",
